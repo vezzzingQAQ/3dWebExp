@@ -1,5 +1,7 @@
 var player;
-var displayList=[];
+var canvasFunctionList=[];//储存房间里的函数对象列表
+var canvasList=[];//储存房间里的画板列表
+var T;
 function setup() {
     createCanvas(windowWidth,windowHeight,WEBGL);
     smooth();
@@ -78,15 +80,15 @@ function setup() {
         }
         lookAround(){
             camera(this.x,this.y+this.height,this.z,
-            this.x+100*cos(this.thetarw),
-            this.y+this.height-100*sin(this.thetaeh),
-            this.z-100*sin(this.thetarw),
+            this.x+200*cos(this.thetarw),
+            this.y+this.height-300*tan(this.thetaeh),
+            this.z-200*sin(this.thetarw),
             0,-1,0);
         }
         update(){
             //鼠标转向
             this.thetarw=map(mouseX,width,0,2*PI,0);
-            this.thetaeh=map(mouseY,0,height,-PI/2,PI/2);
+            this.thetaeh=map(mouseY,0,height,-PI/2+Number.MIN_VALUE,PI/2-Number.MIN_VALUE);
             //走路
             if(this.isWalkingForward){
                 this.walkForward();
@@ -104,42 +106,17 @@ function setup() {
         }
     }
     player=new Player(objects.player,objects.objectsList);
-    displayList.push(createGraphics(200,200));//画板
-    displayList.push(createGraphics(200,200));//画板
+    
+    for(let i=0;i<2;i++){
+        canvasList.push(createGraphics(200,200));
+    }
 }
 function windowResized(){
     resizeCanvas(windowWidth,windowHeight);
 }
 function draw(){
     background(0);
-    {//画板1绘制
-        displayList[0].rectMode(CENTER);
-        displayList[0].background(0);
-        displayList[0].noStroke();
-        for(let x=-2;x<2;x+=0.2){
-            for(let y=-2;y<2;y+=0.2){
-                let z=sin(x*y+frameCount/10);
-                let px=map(x,-2,2,20,180);
-                let py=map(y,-2,2,20,180);
-                displayList[0].fill(map(z,-1,1,0,255),map(z,-1,1,255,0),map(z,-1,1,0,155));
-                displayList[0].rect(px,py,map(z,-1,1,0,20));
-            }
-        }
-    }
-    {//画板2绘制
-        displayList[1].rectMode(CENTER);
-        displayList[1].background(0,50);
-        displayList[1].noStroke();
-        for(let x=-2;x<2;x+=0.1){
-            for(let y=-2;y<2;y+=0.1){
-                let z=sin(x*x+y*y-frameCount/10);
-                let px=map(x,-2,2,0,200);
-                let py=map(y,-2,2,0,200);
-                displayList[1].fill(220,map(z,-1,1,255,0),map(z,-1,1,0,255));
-                displayList[1].rect(px,py,map(z,-1,1,0,20));
-            }
-        }
-    }
+    T=frameCount/20;
     {//渲染场景中的每个物体
         try{
             for(let i=0;i<objects.objectsList.length;i++){
@@ -187,7 +164,13 @@ function draw(){
                             break;
                         case 11:
                             box(currentObject.size.x,currentObject.size.y,currentObject.size.z);
-                            texture(displayList[currentObject.canvasIndex]);
+                            //绘制画板
+                            try{
+                                eval(currentObject.fuc.toStr());
+                            }catch{
+                                eval(currentObject.fuc.err());
+                            }
+                            texture(canvasList[currentObject.canvasIndex]);
                             box(currentObject.displayCubeSize.x,currentObject.displayCubeSize.y,currentObject.displayCubeSize.z);
                             break;
                         case 21:
@@ -195,7 +178,14 @@ function draw(){
                             translate(0,currentObject.size.y/2+currentObject.containCubeSize.y/2,0);
                             noFill();
                             box(currentObject.containCubeSize.x,currentObject.containCubeSize.y,currentObject.containCubeSize.z);
-                            eval(currentObject.canvasCode);
+                            push();
+                                try{
+                                    eval(currentObject.fuc.toStr());
+                                }catch{
+                                    pop();
+                                    eval(currentObject.fuc.err());
+                                }
+                            pop();
                             break;
                         default:
                             console.log("无法识别的物体类型");
