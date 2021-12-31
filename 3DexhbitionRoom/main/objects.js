@@ -17,7 +17,7 @@ var objects={
             y:50,
         },
         height:180,
-        moveSpeed:12,
+        moveSpeed:15,
         moveHeightRange:9,
         bumpR:120,
     },
@@ -369,8 +369,99 @@ var objects={
             fill:null,
             change(t){
                 this.rotation.y+=0.008;
+                this.position.y=Math.sin(t/20)*10+250;
             },
         },
+        //立体展柜实验
+        {
+            name:"displayBox1",
+            type:21,//21展示柜
+            position:{//中心点位置
+                x:500,
+                z:-500,
+                y:80,
+            },
+            size:{
+                x:100,
+                z:100,
+                y:100,
+            },
+            containCubeSize:{//立体展柜特有
+                x:100,
+                z:100,
+                y:100,
+            },
+            canvasCode:
+            `
+            strokeWeight(0.5);
+            stroke(255);
+            for(let x=-2;x<2;x+=0.2){
+                for(let y=-2;y<2;y+=0.2){
+                    let z=sin(x*y-frameCount/20);
+                    push();
+                        translate(x*20,z*20,y*20);
+                        fill(map(z,-1,1,0,255),map(z,-1,1,255,0),255);
+                        box(map(z,-1,1,0,5));
+                    pop();
+                }
+            }
+            `,
+            stroke:[255],
+            fill:[0,200],
+            bump:{
+                size:{
+                    x:100,
+                    z:100,
+                    y:150,
+                }
+            }
+        },        
+        //立体展柜实验
+        {
+            name:"displayBox2",
+            type:21,//21展示柜
+            position:{//中心点位置
+                x:500,
+                z:500,
+                y:80,
+            },
+            size:{
+                x:120,
+                z:120,
+                y:100,
+            },
+            containCubeSize:{//立体展柜特有
+                x:120,
+                z:120,
+                y:150,
+            },
+            canvasCode:
+            `
+            noStroke();
+            for(let x=-20;x<20;x+=2){
+                for(let y=-20;y<20;y+=2){
+                    let z=sin((x+y)/20-frameCount/20);
+                    fill(map(x,-20,20,255,0),map(sin(z*1.2),-1,1,0,250),map(y,-20,20,255,0));
+                    push();
+                    rotateX(z);
+                    rotateY(y)
+                    translate(x*2,y*2,0);
+                    rotateX(z)
+                    box(z*5);
+                    pop(); 
+                }
+            }
+            `,
+            stroke:[255],
+            fill:[0,200],
+            bump:{
+                size:{
+                    x:100,
+                    z:100,
+                    y:150,
+                }
+            }
+        },                
     ]
 }
 

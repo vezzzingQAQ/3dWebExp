@@ -128,7 +128,7 @@ function draw(){
     }
     {//画板2绘制
         displayList[1].rectMode(CENTER);
-        displayList[1].background(0);
+        displayList[1].background(0,50);
         displayList[1].noStroke();
         for(let x=-2;x<2;x+=0.1){
             for(let y=-2;y<2;y+=0.1){
@@ -189,6 +189,13 @@ function draw(){
                             box(currentObject.size.x,currentObject.size.y,currentObject.size.z);
                             texture(displayList[currentObject.canvasIndex]);
                             box(currentObject.displayCubeSize.x,currentObject.displayCubeSize.y,currentObject.displayCubeSize.z);
+                            break;
+                        case 21:
+                            box(currentObject.size.x,currentObject.size.y,currentObject.size.z);
+                            translate(0,currentObject.size.y/2+currentObject.containCubeSize.y/2,0);
+                            noFill();
+                            box(currentObject.containCubeSize.x,currentObject.containCubeSize.y,currentObject.containCubeSize.z);
+                            eval(currentObject.canvasCode);
                             break;
                         default:
                             console.log("无法识别的物体类型");
