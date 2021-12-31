@@ -266,10 +266,10 @@ var objects={
             },
             size:{
                 r:60,
-                h:133,
+                h:193,
             },
-            stroke:null,
-            fill:[0,255,255,100],
+            stroke:[255,100],
+            fill:[0,255,0,100],
         },
         {
             name:"platform",
