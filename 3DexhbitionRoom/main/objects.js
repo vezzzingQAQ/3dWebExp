@@ -5,6 +5,9 @@ type:
 2:球
 3:圆锥
 4:圆柱
+
+11:没有说明的画框
+12:没有说明的画框2
 */
 var objects={
     player:{
@@ -14,7 +17,7 @@ var objects={
             y:50,
         },
         height:180,
-        moveSpeed:9,
+        moveSpeed:12,
         moveHeightRange:9,
         bumpR:120,
     },
@@ -22,7 +25,7 @@ var objects={
         {
             name:"wall1",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:-1000,
                 z:0,
                 y:1000,
@@ -45,7 +48,7 @@ var objects={
         {
             name:"wall2",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:900,
                 z:0,
                 y:1000,
@@ -68,7 +71,7 @@ var objects={
         {
             name:"wall3",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:0,
                 z:-1000,
                 y:1000,
@@ -81,7 +84,7 @@ var objects={
             stroke:[255],
             fill:[0],
             bump:{//立方体碰撞盒
-                size:{
+                size:{//中心点位置
                     x:2200,
                     z:97,
                     y:2000,
@@ -91,7 +94,7 @@ var objects={
         {
             name:"wall4",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:0,
                 z:900,
                 y:1000,
@@ -104,7 +107,7 @@ var objects={
             stroke:[255],
             fill:[0],
             bump:{//立方体碰撞盒
-                size:{
+                size:{//中心点位置
                     x:2200,
                     z:97,
                     y:2000,
@@ -115,7 +118,7 @@ var objects={
         {
             name:"z1",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:-1000,
                 z:-1000,
                 y:1000,
@@ -131,7 +134,7 @@ var objects={
         {
             name:"z2",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:900,
                 z:-1000,
                 y:1000,
@@ -147,7 +150,7 @@ var objects={
         {
             name:"z3",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:900,
                 z:900,
                 y:1000,
@@ -163,7 +166,7 @@ var objects={
         {
             name:"z1",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:-1000,
                 z:900,
                 y:1000,
@@ -180,21 +183,30 @@ var objects={
         {
             name:"ball1",
             type:2,//1标准球体
-            position:{
+            position:{//中心点位置
                 x:0,
                 z:0,
                 y:300,
+            },
+            rotation:{
+                x:0,
+                z:0,
+                y:0,  
             },
             size:{
                 r:100,
             },
             stroke:[255],
             fill:null,
+            change(t){
+                this.rotation.y+=0.008;
+                this.position.y=Math.cos(t/16)*10+300;
+            }
         },
         {
             name:"platform",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:0,
                 z:0,
                 y:80,
@@ -219,7 +231,7 @@ var objects={
         {
             name:"cone",
             type:3,//3标准圆锥
-            position:{
+            position:{//中心点位置
                 x:-500,
                 z:0,
                 y:300,
@@ -234,7 +246,7 @@ var objects={
         {
             name:"platform",
             type:1,//1标准长方体
-            position:{
+            position:{//中心点位置
                 x:-500,
                 z:0,
                 y:80,
@@ -259,17 +271,20 @@ var objects={
         {
             name:"cld",
             type:4,//4标准圆柱
-            position:{
+            position:{//中心点位置
                 x:500,
                 z:0,
                 y:300,
             },
-            size:{
+            size:{//物体大小
                 r:60,
                 h:193,
             },
-            stroke:[255,100],
+            stroke:null,
             fill:[0,255,0,100],
+            change(t){//改变物体的颜色位置旋转...
+                this.position.y=Math.sin(t/20)*20+300;
+            },
         },
         {
             name:"platform",
@@ -294,18 +309,82 @@ var objects={
                     y:100,
                 },
             }
-        },        
+        },  
+        //展示屏实验
+        {
+            name:"displayScreen1",
+            type:11,//11展示屏
+            position:{//中心点位置
+                x:0,
+                z:500,
+                y:300,
+            },
+            size:{
+                x:300,
+                z:100,
+                y:300,
+            },
+            displayCubeSize:{//平面展柜特有
+                x:300,
+                z:0,
+                y:300,
+            },
+            canvasIndex:0,
+            stroke:[255,255,0],
+            fill:null,
+            bump:{
+                size:{
+                    x:300,
+                    z:100,
+                    y:300,
+               }
+            }
+        },
+        //展示屏实验2
+        {
+            name:"displayScreen2",
+            type:11,//11展示屏
+            position:{//中心点位置
+                x:0,
+                z:-500,
+                y:250,
+            },
+            rotation:{
+                x:0,
+                y:0,
+                z:0,
+            },
+            size:{
+                x:200,
+                z:200,
+                y:200,
+            },
+            displayCubeSize:{//平面展柜特有
+                x:200,
+                z:200,
+                y:200,
+            },
+            canvasIndex:1,
+            stroke:[255],
+            fill:null,
+            change(t){
+                this.rotation.y+=0.008;
+            },
+        },
     ]
 }
 
 //生成地面
 for(let x=-10;x<10;x++){
     for(let z=-10;z<10;z++){
-        let zValue=Math.sin((x/3)*(z/3))+1;
         objects.objectsList.push(
             {
                 name:"ground",
                 type:1,//1标准长方体
+                paraList:{//携带的参数列表
+                    x:x/5,
+                    z:z/5,
+                },
                 position:{
                     x:x*100,
                     z:z*100,
@@ -317,8 +396,17 @@ for(let x=-10;x<10;x++){
                     y:100,
                 },
                 strokeWeight:10,
-                stroke:[zValue*60+60,60-zValue*120,100],
+                stroke:null,
                 fill:[0],
+                change(t){
+                    let zv=Math.sin(this.paraList.x*this.paraList.z+t/10);
+                    this.stroke=[
+                        zv*120+120,
+                        120-zv*120,
+                        zv*60+60,
+                    ];
+                    this.strokeWeight=(zv+1)*10;
+                },
             }
         )
     }
@@ -331,6 +419,10 @@ for(let x=-10;x<10;x++){
             {
                 name:"sky",
                 type:1,//1标准长方体
+                paraList:{//携带的参数列表
+                    x:x/5,
+                    z:z/5,
+                },
                 position:{
                     x:x*100,
                     z:z*100,
@@ -344,6 +436,9 @@ for(let x=-10;x<10;x++){
                 strokeWeight:10,
                 stroke:[zValue*60+60,60-zValue*120,100],
                 fill:[0],
+                change(t){
+                    this.position.y=Math.sin(this.paraList.x*this.paraList.x+this.paraList.z*this.paraList.z+t/40)*50+1300;
+                },
             }
         )
     }
