@@ -35,6 +35,11 @@
                     this.moveHeightRange=player.moveHeightRange;
                     this.bumpR=player.bumpR;
                     this.objectsList=objects;
+                    
+                    this.isWalkingForward=false;
+                    this.isWalkingBackward=false;
+                    this.isWalkingLeft=false;
+                    this.isWalkingRight=false;
                 }
                 _calBump(x,z,cube){//返回x,z位置坐标的值
                     if(cube.hasOwnProperty("bump") && cube.position.y+cube.bump.size.y/2>(this.y+player.height)/2){
@@ -105,17 +110,17 @@
                     this.thetarw=map(mouseX,width,0,2*PI,0);
                     this.thetaeh=map(mouseY,0,height,-PI/2,PI/2);
                     //走路
-                    if(keyIsPressed){
-                        if(keyCode==87){
-                            this.walkForward();
-                        }else if(keyCode==83){
-                            this.walkBackward();
-                        }else if(keyCode==65){
-                            this.walkLeft();
-                        }else if(keyCode==68){
-                            this.walkRight();
-                        }
-                        
+                    if(this.isWalkingForward){
+                        this.walkForward();
+                    }
+                    if(this.isWalkingBackward){
+                        this.walkBackward();
+                    }
+                    if(this.isWalkingLeft){
+                        this.walkLeft();
+                    }
+                    if(this.isWalkingRight){
+                        this.walkRight();
                     }
                     this.lookAround();
                 }
@@ -130,25 +135,82 @@
             //渲染场景中的每个物体
             for(let i=0;i<objects.objectsList.length;i++){
                 let currentObject=objects.objectsList[i];
-                if(currentObject.type==1){
-                    push();
-                        if(currentObject.stroke!=null){
-                            stroke.apply(null,currentObject.stroke);
-                        }else{
-                            noStroke();
-                        }
-                        if(currentObject.fill!=null){
-                            fill.apply(null,currentObject.fill);
-                        }else{
-                            noFill();
-                        }
-                        translate(currentObject.position.x,currentObject.position.y,currentObject.position.z);
-                        box(currentObject.size.x,currentObject.size.y,currentObject.size.z);
-                    pop();
+                if(currentObject.hasOwnProperty("strokeWeight")){
+                    strokeWeight(currentObject.strokeWeight);
+                }else{
+                    strokeWeight(1);
+                }
+                if(currentObject.stroke!=null){
+                    stroke.apply(null,currentObject.stroke);
+                }else{
+                    noStroke();
+                }
+                if(currentObject.fill!=null){
+                    fill.apply(null,currentObject.fill);
+                }else{
+                    noFill();
+                }
+                switch(currentObject.type){
+                    case 1:
+                        push();
+                            translate(currentObject.position.x,currentObject.position.y,currentObject.position.z);
+                            box(currentObject.size.x,currentObject.size.y,currentObject.size.z);
+                        pop();
+                        break;
+                    case 2:
+                        push();
+                            translate(currentObject.position.x,currentObject.position.y,currentObject.position.z);
+                            sphere(currentObject.size.r);
+                        pop();
+                        break;
+                    case 3:
+                        push();
+                            translate(currentObject.position.x,currentObject.position.y,currentObject.position.z);
+                            cone(currentObject.size.r,currentObject.size.h);
+                        pop();
+                        break;
+                    case 4:
+                        push();
+                            translate(currentObject.position.x,currentObject.position.y,currentObject.position.z);
+                            cylinder(currentObject.size.r,currentObject.size.h);
+                        pop();
+                        break;
                 }
             }
             //加入玩家视角
             player.update();
+        }
+        function keyPressed(){
+            switch(keyCode){
+                case 87:
+                    player.isWalkingForward=true;   
+                    break;
+                case 83:
+                    player.isWalkingBackward=true;  
+                    break;
+                case 65:
+                    player.isWalkingLeft=true; 
+                    break;
+                case 68:
+                    player.isWalkingRight=true;
+                    break;
+            }
+        }
+        function keyReleased(){
+            switch(keyCode){
+                case 87:
+                    player.isWalkingForward=false;   
+                    break;
+                case 83:
+                    player.isWalkingBackward=false;  
+                    break;
+                case 65:
+                    player.isWalkingLeft=false; 
+                    break;
+                case 68:
+                    player.isWalkingRight=false;
+                    break;
+            }
         }
     </script>
 </head>
