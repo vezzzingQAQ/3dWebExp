@@ -17,172 +17,15 @@ var objects={
             y:50,
         },
         height:180,
-        moveSpeed:15,
+        moveSpeed:10,
         moveHeightRange:9,
         bumpR:120,
     },
     objectsList:[
-        {
-            name:"wall1",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:-1000,
-                z:0,
-                y:1000,
-            },
-            size:{
-                x:97,
-                z:2200,
-                y:2000,
-            },
-            stroke:[255],
-            fill:[0],
-            bump:{//立方体碰撞盒
-                size:{
-                    x:90,
-                    z:2200,
-                    y:2000,
-                },
-            }
-        },
-        {
-            name:"wall2",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:900,
-                z:0,
-                y:1000,
-            },
-            size:{
-                x:97,
-                z:2200,
-                y:2000,
-            },
-            stroke:[255],
-            fill:[0],
-            bump:{//立方体碰撞盒
-                size:{
-                    x:90,
-                    z:2200,
-                    y:2000,
-                },
-            }
-        },
-        {
-            name:"wall3",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:0,
-                z:-1000,
-                y:1000,
-            },
-            size:{
-                x:2200,
-                z:97,
-                y:2000,
-            },
-            stroke:[255],
-            fill:[0],
-            bump:{//立方体碰撞盒
-                size:{//中心点位置
-                    x:2200,
-                    z:97,
-                    y:2000,
-                },
-            }
-        },
-        {
-            name:"wall4",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:0,
-                z:900,
-                y:1000,
-            },
-            size:{
-                x:2200,
-                z:97,
-                y:2000,
-            },
-            stroke:[255],
-            fill:[0],
-            bump:{//立方体碰撞盒
-                size:{//中心点位置
-                    x:2200,
-                    z:97,
-                    y:2000,
-                },
-            }
-        },
-        //支柱
-        {
-            name:"z1",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:-1000,
-                z:-1000,
-                y:1000,
-            },
-            size:{
-                x:100,
-                z:100,
-                y:2000,
-            },
-            stroke:null,
-            fill:[100],
-        },
-        {
-            name:"z2",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:900,
-                z:-1000,
-                y:1000,
-            },
-            size:{
-                x:100,
-                z:100,
-                y:2000,
-            },
-            stroke:null,
-            fill:[100],
-        },
-        {
-            name:"z3",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:900,
-                z:900,
-                y:1000,
-            },
-            size:{
-                x:100,
-                z:100,
-                y:2000,
-            },
-            stroke:null,
-            fill:[100],
-        },
-        {
-            name:"z1",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:-1000,
-                z:900,
-                y:1000,
-            },
-            size:{
-                x:100,
-                z:100,
-                y:2000,
-            },
-            stroke:null,
-            fill:[100],
-        },
         //球体实验
         {
             name:"ball1",
-            type:2,//1标准球体
+            type:2,//2标准球体
             position:{//中心点位置
                 x:0,
                 z:0,
@@ -321,7 +164,7 @@ var objects={
             },
             size:{
                 x:300,
-                z:100,
+                z:20,
                 y:300,
             },
             displayCubeSize:{//平面展柜特有
@@ -329,7 +172,6 @@ var objects={
                 z:0,
                 y:300,
             },
-            canvasIndex:0,
             fuc:new TdFunctionFlat(
                 -2,2,40,
                 -2,2,40,
@@ -337,9 +179,9 @@ var objects={
                 `
                 noStroke();
                 fill(0,map(z,-1,1,255,0),map(z,-1,1,0,255));
-                rect(px,py,map(z,-1,1,0,20));`,0
+                rect(px,py,map(z,-1,1,0,20));`
             ),
-            stroke:[255,255,0],
+            stroke:[200,255,0],
             fill:null,
             bump:{
                 size:{
@@ -373,14 +215,13 @@ var objects={
                 z:300,
                 y:300,
             },
-            canvasIndex:1,
             fuc:new TdFunctionFlat(
                 -2,2,20,
                 -2,2,20,
                 `sin(x*x+y*y-T)`,
                 `
                 fill(220,map(z,-1,1,255,0),map(z,-1,1,0,255));
-                rect(px,py,map(z,-1,1,10,20));`,1
+                rect(px,py,map(z,-1,1,10,20));`
             ),
             stroke:[255],
             fill:null,
@@ -389,158 +230,74 @@ var objects={
                 this.position.y=Math.sin(t/20)*10+250;
             },
         },
-        //立体展柜实验
-        {
-            name:"displayBox1",
-            type:21,//21展示柜
-            position:{//中心点位置
-                x:500,
-                z:-500,
-                y:80,
-            },
-            size:{
-                x:100,
-                z:100,
-                y:100,
-            },
-            containCubeSize:{//立体展柜特有
-                x:100,
-                z:100,
-                y:100,
-            },
-            fuc:new GlFunction(
-                -2,2,20,
-                -2,2,20,
-                `sin(x*y-map(mouseX,0,width,0,30))`,
-                `
-                strokeWeight(0.5);
-                stroke(255);    
-                translate(x*20,z*20,y*20);
-                fill(map(z,-1,1,0,255),map(z,-1,1,255,0),255);
-                box(map(z,-1,1,0,5));`
-            ),
-            stroke:[255],
-            fill:[0,200],
-            bump:{
-                size:{
-                    x:100,
-                    z:100,
-                    y:150,
-                }
-            }
-        },        
-        //立体展柜实验
-        {
-            name:"displayBox2",
-            type:21,//21展示柜
-            position:{//中心点位置
-                x:500,
-                z:500,
-                y:80,
-            },
-            size:{
-                x:120,
-                z:120,
-                y:100,
-            },
-            containCubeSize:{//立体展柜特有
-                x:120,
-                z:120,
-                y:150,
-            },
-            fuc:new GlFunction(
-                -20,20,20,
-                -20,20,20,
-                `sin((x+y)/20-frameCount/20)`,
-                `
-                noStroke();
-                fill(map(x,-20,20,255,0),map(sin(z*1.2),-1,1,0,250),map(y,-20,20,255,0));
-                rotateX(z);
-                rotateY(y)
-                translate(x*2,y*2,0);
-                rotateX(z)
-                box(z*5);`
-            ),
-            stroke:[255],
-            fill:[0,200],
-            bump:{
-                size:{
-                    x:100,
-                    z:100,
-                    y:150,
-                }
-            }
-        },                
     ]
 }
 
 //生成地面
-for(let x=-10;x<10;x++){
-    for(let z=-10;z<10;z++){
-        objects.objectsList.push(
-            {
-                name:"ground",
-                type:1,//1标准长方体
-                paraList:{//携带的参数列表
-                    x:x/5,
-                    z:z/5,
-                },
-                position:{
-                    x:x*100,
-                    z:z*100,
-                    y:-50,
-                },
-                size:{
-                    x:100,
-                    z:100,
-                    y:100,
-                },
-                strokeWeight:10,
-                stroke:null,
-                fill:[0],
-                change(t){
-                    let zv=Math.sin(this.paraList.x*this.paraList.z+t/10);
-                    this.stroke=[
-                        zv*120+120,
-                        120-zv*120,
-                        zv*60+60,
-                    ];
-                    this.strokeWeight=(zv+1)*10;
-                },
-            }
-        )
-    }
-}
+initBasicGround();
 //生成天花板
-for(let x=-10;x<10;x++){
-    for(let z=-10;z<10;z++){
-        let zValue=Math.sin((x/3)*(x/3)+(z/3)*(z/3))+1;
-        objects.objectsList.push(
-            {
-                name:"sky",
-                type:1,//1标准长方体
-                paraList:{//携带的参数列表
-                    x:x/5,
-                    z:z/5,
-                },
-                position:{
-                    x:x*100,
-                    z:z*100,
-                    y:1500-zValue*100,
-                },
-                size:{
-                    x:100,
-                    z:100,
-                    y:zValue*200,
-                },
-                strokeWeight:10,
-                stroke:[zValue*60+60,60-zValue*120,100],
-                fill:[0],
-                change(t){
-                    this.position.y=Math.sin(this.paraList.x*this.paraList.x+this.paraList.z*this.paraList.z+t/40)*50+1300;
-                },
-            }
-        )
-    }
-}
-
+initBasicCelling();
+//生成周围的墙
+initBasicWall();
+initBasicDisplayScreen(
+    "展示屏3",
+    {x:-500,z:-500,y:300},
+    {x:1,z:1,y:1},
+    new TdFunctionFlat(
+        -5,5,40,
+        -5,5,40,
+        `sin(sin(x)*cos(y)+T)`,
+        `
+        noStroke();
+        fill(sin(z*10)*120+120,map(z,-1,1,255,0),map(z,-1,1,0,255));
+        rect(px,py,map(z,-1,1,0,5));`
+    )
+);
+initBasicDisplayBox(
+    "展柜1",
+    {x:-500,z:500,y:80},
+    {x:1.5,z:1.5,y:4},
+    new GlFunction(
+        -5,5,10,
+        -5,5,10,
+        `sin(x*y-map(mouseY,0,height,0,10)-T/9)`,
+        `
+        strokeWeight(0.5);
+        stroke(255);    
+        fill(map(x,-5,5,0,255),map(y,5,-5,255,0),map(z,-1,1,0,255));
+        translate(0,z*100,0);
+        box(5,map(abs(z),1,0,0,100),5);`
+    )
+);
+initBasicDisplayBox(
+    "展柜2",
+    {x:500,z:500,y:80},
+    {x:1,z:1,y:1},
+    new GlFunction(
+        -2,2,20,
+        -2,2,20,
+        `sin(sin(x)*y-T)`,
+        `
+        noStroke();
+        fill(map(x,-2,2,255,0),map(sin(z*1.2),-1,1,0,250),map(y,-2,2,255,0));
+        rotateX(z);
+        rotateY(y)
+        rotateX(z)
+        box(2);`
+    )
+);
+initBasicDisplayBox(
+    "展柜3",
+    {x:500,z:-500,y:80},
+    {x:1,z:1,y:1},
+    new GlFunction(
+        -2,2,20,
+        -2,2,20,
+        `sin(x*y-map(mouseX,0,width,0,30))`,
+        `
+        strokeWeight(0.5);
+        stroke(255);    
+        fill(map(z,-1,1,0,255),map(z,-1,1,255,0),255);
+        box(map(z,-1,1,0,5));`
+    )
+);

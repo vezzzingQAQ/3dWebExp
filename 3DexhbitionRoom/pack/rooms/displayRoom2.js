@@ -9,97 +9,24 @@ type:
 11:没有说明的画框
 12:没有说明的画框2
 */
-var objects={
-    player:{
-        startPosition:{
-            x:0,
-            z:0,
-            y:50,
-        },
-        height:180,
-        moveSpeed:15,
-        moveHeightRange:9,
-        bumpR:120,
-    },
-    objectsList:[
-
-    ]
-}
-
+var objects=initStruc();
 //生成地面
-for(let x=-20;x<20;x++){
-    for(let z=-20;z<20;z++){
-        let zValue=Math.sin((x/3)*(x/3)+(z/3)*(z/3))+1;
-        objects.objectsList.push(
-            {
-                name:"ground",
-                type:1,//1标准长方体
-                paraList:{//携带的参数列表
-                    x:x/5,
-                    z:z/5,
-                },
-                position:{
-                    x:x*100,
-                    z:z*100,
-                    y:-50,
-                },
-                size:{
-                    x:100,
-                    z:100,
-                    y:100,
-                },
-                strokeWeight:10,
-                stroke:null,
-                fill:[0],
-                change(t){
-                    let zv=Math.sin(this.paraList.x*this.paraList.z+t/10);
-                    this.stroke=[
-                        zv*120+120,
-                        120-zv*120,
-                        zv*60+60,
-                    ];
-                    this.strokeWeight=(zv+1)*10;
-                },
-            }
-        )
-    }
-}
+initBasicGround();
 //生成天花板
-for(let x=-10;x<10;x++){
-    for(let z=-10;z<10;z++){
-        let zValue=Math.sin((x/3)*(x/3)+(z/3)*(z/3))+1;
-        objects.objectsList.push(
-            {
-                name:"sky",
-                type:1,//1标准长方体
-                paraList:{//携带的参数列表
-                    x:x/5,
-                    z:z/5,
-                },
-                position:{
-                    x:x*100,
-                    z:z*100,
-                    y:1500-zValue*100,
-                },
-                rotation:{
-                    x:0,
-                    z:0,
-                    y:0,
-                },
-                size:{
-                    x:100,
-                    z:100,
-                    y:100,
-                },
-                strokeWeight:10,
-                stroke:[zValue*120+120,120-zValue*120,120],
-                fill:[0],
-                change(t){
-                    this.rotation.y+=0.02;
-                    this.position.y=Math.sin(this.paraList.x*this.paraList.x+this.paraList.z*this.paraList.z+t/30)*550+1300;
-                },
-            }
-        )
-    }
-}
-
+initBasicCelling();
+//生成周围的墙
+initBasicWall();
+initBasicDisplayScreen(
+    "展示屏3",
+    {x:-500,z:-500,y:300},
+    1,
+    new TdFunctionFlat(
+        -5,5,80,
+        -5,5,80,
+        `sin(sin(x)*cos(y)+T)`,
+        `
+        noStroke();
+        fill(sin(z*10)*120+120,map(z,-1,1,255,0),map(z,-1,1,0,255));
+        rect(px,py,map(z,-1,1,0,5));`
+    )
+)

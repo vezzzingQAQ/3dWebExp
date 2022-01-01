@@ -11,6 +11,8 @@ class TdFunctionFlat{
         this.sf=sf;//函数表达式
         this.schangef=schangef;//对于每个点的操作
         this.canvasIndex=canvasIndex;//画布index
+
+        this.timeCop=this.ax*this.ay;//时间复杂度
     }
     toStr(){
         let schangeNew=this.schangef.replace(/\r\n/g,"\r\n"+"canvasList["+this.canvasIndex+"].");
@@ -19,11 +21,11 @@ class TdFunctionFlat{
         `
         canvasList[${this.canvasIndex}].rectMode(CENTER);
         canvasList[${this.canvasIndex}].background(0);
-        for(let x=${this.fromx};x<${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
-            for(let y=${this.fromy};y<${this.toy};y+=${(this.toy-this.fromy)/this.ay}){
+        for(let x=${this.fromx};x<=${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
+            for(let y=${this.fromy};y<=${this.toy};y+=${(this.toy-this.fromy)/this.ay}){
                 let z=${this.sf};
-                let px=map(x,-2,2,20,180);
-                let py=map(y,-2,2,20,180);
+                let px=map(x,${this.fromx},${this.tox},20,180);
+                let py=map(y,${this.fromy},${this.toy},20,180);
                 ${schangeNew}
             }
         }
@@ -51,18 +53,23 @@ class GlFunction{
         
         this.sf=sf;//函数表达式
         this.schangef=schangef;//对于每个点的操作
+
+        this.timeCop=this.ax*this.ay;//时间复杂度
     }
     toStr(){
         let textTemp=
         `
-        for(let x=${this.fromx};x<${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
-            for(let y=${this.fromy};y<${this.toy};y+=${(this.toy-this.fromy)/this.ay}){
-                let z=${this.sf};
-                push();
-                ${this.schangef}
-                pop();
+        push();
+            for(let x=${this.fromx};x<=${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
+                for(let y=${this.fromy};y<=${this.toy};y+=${(this.toy-this.fromy)/this.ay}){
+                    let z=${this.sf};
+                    push();
+                    translate(map(x,${this.fromx},${this.tox},-40,40),z*15,map(y,${this.fromy},${this.toy},-40,40));
+                    ${this.schangef}
+                    pop();
+                }
             }
-        }
+        pop();
         `
         return(textTemp);
     }

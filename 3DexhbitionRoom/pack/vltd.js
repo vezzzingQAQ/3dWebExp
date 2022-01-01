@@ -1,6 +1,6 @@
 var player;
-var canvasFunctionList=[];//储存房间里的函数对象列表
 var canvasList=[];//储存房间里的画板列表
+var calFrameCount=0;//计算过后的应有帧数
 var T;
 function setup() {
     createCanvas(windowWidth,windowHeight,WEBGL);
@@ -13,6 +13,7 @@ function setup() {
             this.height=player.height;
             this.originHeight=player.height;
             this.moveSpeed=player.moveSpeed;
+            this.originMoveSpeed=player.moveSpeed;//原有speed
             this.moveHeightRange=player.moveHeightRange;
             this.bumpR=player.bumpR;
             this.objectsList=objects;
@@ -51,6 +52,7 @@ function setup() {
             }
         }
         _walk(){
+            this.moveSpeed=this.originMoveSpeed*(deltaTime/(50/3));//根据帧率计算行走速度
             for(let i=0;i<this.objectsList.length;i++){
                 let newPosition=this._calBump(this.x,this.z,this.objectsList[i]);
                 this.x=newPosition.x;
@@ -106,9 +108,12 @@ function setup() {
         }
     }
     player=new Player(objects.player,objects.objectsList);
-    
-    for(let i=0;i<2;i++){
-        canvasList.push(createGraphics(200,200));
+    for(let i=0;i<objects.objectsList.length;i++){
+        currentObject=objects.objectsList[i];
+        if(currentObject.type==11){//需要canvas画布
+            canvasList.push(createGraphics(200,200));
+            currentObject.fuc.canvasIndex=canvasList.length-1;
+        }
     }
 }
 function windowResized(){
@@ -116,35 +121,35 @@ function windowResized(){
 }
 function draw(){
     background(0);
-    T=frameCount/20;
+    T=calFrameCount/20;
     {//渲染场景中的每个物体
         try{
             for(let i=0;i<objects.objectsList.length;i++){
                 let currentObject=objects.objectsList[i];
                 {//渲染物体
-                    if(currentObject.hasOwnProperty("strokeWeight")){
+                    if(currentObject.hasOwnProperty("strokeWeight") && currentObject.strokeWeight!=null){
                         strokeWeight(currentObject.strokeWeight);
                     }else{
                         strokeWeight(1);
                     }
-                    if(currentObject.stroke!=null){
+                    if(currentObject.hasOwnProperty("stroke") && currentObject.stroke!=null){
                         stroke.apply(null,currentObject.stroke);
                     }else{
                         noStroke();
                     }
-                    if(currentObject.fill!=null){
+                    if(currentObject.hasOwnProperty("fill") && currentObject.fill!=null){
                         fill.apply(null,currentObject.fill);
                     }else{
                         noFill();
                     }
                     //解析运动函数
-                    if(currentObject.hasOwnProperty("change")){
-                        currentObject.change(frameCount);
+                    if(currentObject.hasOwnProperty("change") && currentObject.change!=null){
+                        currentObject.change(calFrameCount);
                     }
                 }
                 push();
                     translate(currentObject.position.x,currentObject.position.y,currentObject.position.z);
-                    if(currentObject.hasOwnProperty("rotation")){
+                    if(currentObject.hasOwnProperty("rotation") && currentObject.rotation!=null){
                         rotateX(currentObject.rotation.x);
                         rotateY(currentObject.rotation.y);
                         rotateZ(currentObject.rotation.z);
@@ -170,7 +175,7 @@ function draw(){
                             }catch{
                                 eval(currentObject.fuc.err());
                             }
-                            texture(canvasList[currentObject.canvasIndex]);
+                            texture(canvasList[currentObject.fuc.canvasIndex]);
                             box(currentObject.displayCubeSize.x,currentObject.displayCubeSize.y,currentObject.displayCubeSize.z);
                             break;
                         case 21:
@@ -199,6 +204,8 @@ function draw(){
     }
     //加入玩家视角
     player.update();
+    //处理帧率
+    calFrameCount+=deltaTime/(50/3);
 }
 function keyPressed(){
     switch(keyCode){
