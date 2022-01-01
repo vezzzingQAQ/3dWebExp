@@ -57,8 +57,8 @@ function initBasicGround(){
     }    
 }
 function initBasicWall(){
-    let show=false;
-    let wallHeight=800;
+    let show=true;
+    let wallHeight=2200;
 
     let currentColor;
     let currentFill;
