@@ -1,26 +1,4 @@
-//物件列表规范
-/*
-type:
-1:长方体
-2:球
-3:圆锥
-4:圆柱
-
-11:没有说明的画框
-12:没有说明的画框2
-*/
 var objects={
-    player:{
-        startPosition:{
-            x:400,
-            z:400,
-            y:50,
-        },
-        height:180,
-        moveSpeed:10,
-        moveHeightRange:9,
-        bumpR:120,
-    },
     objectsList:[
         //球体实验
         {

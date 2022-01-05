@@ -1,64 +1,54 @@
 function initStruc(){
     return(
         {
-            player:{
-                startPosition:{
-                    x:0,
-                    z:0,
-                    y:50,
-                },
-                height:180,
-                moveSpeed:11,
-                moveHeightRange:9,
-                bumpR:120,
-            },
             objectsList:[
         
             ]        
         }
     );
 }
-function initBasicGround(){
-    for(let x=-10;x<10;x++){
-        for(let z=-10;z<10;z++){
+function initBasicGround(xsize=2000,xcount=20,zsize=2000,zcount=20,f=(t,obj)=>{
+        let zv=Math.sin(obj.paraList.x*obj.paraList.z+t/10);
+        obj.stroke=[
+            zv*120+120,
+            120-zv*120,
+            zv*60+60,
+        ];
+        obj.strokeWeight=(zv+1)*10;
+},plRatiox=1,plRatioy=1){
+    for(let x=-xcount/2;x<xcount/2;x++){
+        for(let z=-zcount/2;z<zcount/2;z++){
             objects.objectsList.push(
                 {
                     name:"ground",
                     type:1,//1标准长方体
                     paraList:{//携带的参数列表
-                        x:x/5,
-                        z:z/5,
+                        x:x/plRatiox,
+                        z:z/plRatioy,
                     },
                     position:{
-                        x:x*100,
-                        z:z*100,
+                        x:x*(xsize/xcount),
+                        z:z*(zsize/zcount),
                         y:-50,
                     },
                     size:{
-                        x:100,
-                        z:100,
+                        x:xsize/xcount,
+                        z:zsize/zcount,
                         y:100,
                     },
                     strokeWeight:10,
-                    stroke:null,
+                    stroke:[100],
                     fill:[0],
                     change(t){
-                        let zv=Math.sin(this.paraList.x*this.paraList.z+t/10);
-                        this.stroke=[
-                            zv*120+120,
-                            120-zv*120,
-                            zv*60+60,
-                        ];
-                        this.strokeWeight=(zv+1)*10;
+                        //console.log(this);
+                        f(t,this);
                     },
                 }
             )
         }
     }    
 }
-function initBasicWall(){
-    let show=true;
-    let wallHeight=2200;
+function initBasicWall(show=true,wallHeight=2200){
 
     let currentColor;
     let currentFill;
@@ -230,33 +220,34 @@ function initBasicWall(){
         }
     )
 }
-function initBasicCelling(){
-    for(let x=-10;x<10;x++){
-        for(let z=-10;z<10;z++){
-            let zValue=Math.sin((x/3)*(x/3)+(z/3)*(z/3))+1;
+function initBasicCelling(xsize=2000,xcount=20,zsize=2000,zcount=20,height=1300,f=(t,obj)=>{
+    obj.position.y=Math.sin(obj.paraList.x*obj.paraList.x+obj.paraList.z*obj.paraList.z+t/40)*150+1300;
+},plRatiox=1,plRatioy=1){
+    for(let x=-xcount/2;x<xcount/2;x++){
+        for(let z=-zcount/2;z<zcount/2;z++){
             objects.objectsList.push(
                 {
                     name:"sky",
                     type:1,//1标准长方体
                     paraList:{//携带的参数列表
-                        x:x/5,
-                        z:z/5,
+                        x:x/plRatiox,
+                        z:z/plRatioy,
                     },
                     position:{
-                        x:x*100,
-                        z:z*100,
-                        y:1500-zValue*100,
+                        x:x*(xsize/xcount),
+                        z:z*(zsize/zcount),
+                        y:height,
                     },
                     size:{
-                        x:100,
-                        z:100,
-                        y:zValue*200,
+                        x:xsize/xcount,
+                        z:zsize/zcount,
+                        y:200,
                     },
-                    strokeWeight:10,
-                    stroke:[zValue*60+60,60-zValue*120,100],
+                    strokeWeight:3,
+                    stroke:[100],
                     fill:[0],
                     change(t){
-                        this.position.y=Math.sin(this.paraList.x*this.paraList.x+this.paraList.z*this.paraList.z+t/40)*150+1300;
+                        f(t,this);
                     },
                 }
             )

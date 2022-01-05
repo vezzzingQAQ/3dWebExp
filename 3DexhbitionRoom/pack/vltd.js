@@ -1,8 +1,16 @@
 var player;
+var roomObjects
 var canvasList=[];//储存房间里的画板列表
 var calFrameCount=0;//计算过后的应有帧数
 var T;
-function setup() {
+
+var _loadedPlayer;
+//var _loadedRoom;
+function preload(){
+    _loadedPlayer=loadJSON("./../pack/player/player.json");
+    //_loadedRoom=loadJSON("./../pack/rooms/displayRoom1.json");
+}
+function setup(){
     createCanvas(windowWidth,windowHeight,WEBGL);
     smooth();
     class Player{
@@ -107,7 +115,7 @@ function setup() {
             this.lookAround();
         }
     }
-    player=new Player(objects.player,objects.objectsList);
+    player=new Player(_loadedPlayer,objects.objectsList);
     for(let i=0;i<objects.objectsList.length;i++){
         currentObject=objects.objectsList[i];
         if(currentObject.type==11){//需要canvas画布
@@ -123,7 +131,7 @@ function draw(){
     background(0);
     T=calFrameCount/20;
     {//渲染场景中的每个物体
-        try{
+        // try{
             for(let i=0;i<objects.objectsList.length;i++){
                 let currentObject=objects.objectsList[i];
                 {//渲染物体
@@ -144,6 +152,7 @@ function draw(){
                     }
                     //解析运动函数
                     if(currentObject.hasOwnProperty("change") && currentObject.change!=null){
+                        // eval(currentObject.change(calFrameCount));
                         currentObject.change(calFrameCount);
                     }
                 }
@@ -198,14 +207,15 @@ function draw(){
                     }
                 pop();
             }
-        }catch{
-            console.log("导入物体出错");
-        }
+        // }catch{
+        //     console.log("导入物体出错");
+        // }
     }
     //加入玩家视角
     player.update();
     //处理帧率
     calFrameCount+=deltaTime/(50/3);
+    console.log(deltaTime);
 }
 function keyPressed(){
     switch(keyCode){
