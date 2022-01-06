@@ -1,4 +1,15 @@
 var objects={
+    player:{
+        "startPosition":{
+            "x":400,
+            "z":400,
+            "y":50
+        },
+        "height":180,
+        "moveSpeed":10,
+        "moveHeightRange":9,
+        "bumpR":120
+    },
     objectsList:[
         //球体实验
         {
@@ -216,7 +227,8 @@ initBasicGround();
 //生成天花板
 initBasicCelling();
 //生成周围的墙
-initBasicWall();
+initCalWall(2200,2000,2000,[100],[0]);
+initCalWallBlocks(2200,2000,2000,[100],[255]);
 initBasicDisplayScreen(
     "展示屏3",
     {x:-500,z:-500,y:300},

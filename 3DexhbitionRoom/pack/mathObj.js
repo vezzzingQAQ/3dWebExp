@@ -1,5 +1,5 @@
 class TdFunctionFlat{
-    constructor(fromx,tox,ax,fromy,toy,ay,sf,schangef,canvasIndex){
+    constructor(acobj,fromx,tox,ax,fromy,toy,ay,sf,schangef,canvasIndex){
         this.type="2d";
         this.fromx=fromx;
         this.tox=tox;
@@ -7,6 +7,8 @@ class TdFunctionFlat{
         this.toy=toy;
         this.ax=ax;
         this.ay=ay;
+
+        this.acobj=acobj;
         
         this.sf=sf;//函数表达式
         this.schangef=schangef;//对于每个点的操作
@@ -29,6 +31,22 @@ class TdFunctionFlat{
                 ${schangeNew}
             }
         }
+        `
+        return(textTemp);
+    }
+    toDisplayStr(){
+        let textTemp=
+        `
+rectMode(CENTER);
+background(0);
+for(let x=${this.fromx};x<=${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
+    for(let y=${this.fromy};y<=${this.toy};y+=${(this.toy-this.fromy)/this.ay}){
+        let z=${this.sf};
+        let px=map(x,${this.fromx},${this.tox},20,180);
+        let py=map(y,${this.fromy},${this.toy},20,180);
+        ${this.schangef}
+    }
+}
         `
         return(textTemp);
     }

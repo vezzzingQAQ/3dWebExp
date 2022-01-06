@@ -1,256 +1,264 @@
-function initStruc(){
+function initStruc(x=0,z=0){
     return(
         {
+            player:{
+                "startPosition":{
+                    "x":x,
+                    "z":z,
+                    "y":50
+                },
+                "height":180,
+                "moveSpeed":10,
+                "moveHeightRange":9,
+                "bumpR":120
+            },
             objectsList:[
         
             ]        
         }
     );
 }
-function initBasicGround(xsize=2000,xcount=20,zsize=2000,zcount=20,f=(t,obj)=>{
-        let zv=Math.sin(obj.paraList.x*obj.paraList.z+t/10);
-        obj.stroke=[
-            zv*120+120,
-            120-zv*120,
-            zv*60+60,
-        ];
-        obj.strokeWeight=(zv+1)*10;
-},plRatiox=1,plRatioy=1){
+function initBasicGround(xsize=2000,xcount=20,zsize=2000,zcount=20,f){
+    let plRatiox=1,plRatioy=1;
     for(let x=-xcount/2;x<xcount/2;x++){
         for(let z=-zcount/2;z<zcount/2;z++){
-            objects.objectsList.push(
-                {
-                    name:"ground",
-                    type:1,//1标准长方体
-                    paraList:{//携带的参数列表
-                        x:x/plRatiox,
-                        z:z/plRatioy,
-                    },
-                    position:{
-                        x:x*(xsize/xcount),
-                        z:z*(zsize/zcount),
-                        y:-50,
-                    },
-                    size:{
-                        x:xsize/xcount,
-                        z:zsize/zcount,
-                        y:100,
-                    },
-                    strokeWeight:10,
-                    stroke:[100],
-                    fill:[0],
-                    change(t){
-                        //console.log(this);
-                        f(t,this);
-                    },
+            let currentBlock={
+                name:"ground",
+                type:1,//1标准长方体
+                paraList:{//携带的参数列表
+                    x:x/plRatiox,
+                    z:z/plRatioy,
+                },
+                position:{
+                    x:x*(xsize/xcount),
+                    z:z*(zsize/zcount),
+                    y:-50,
+                },
+                size:{
+                    x:xsize/xcount,
+                    z:zsize/zcount,
+                    y:100,
+                },
+                strokeWeight:10,
+                stroke:[100],
+                fill:[0],
+            }
+            if(arguments.length==5){
+                currentBlock.change=function(t){
+                    f(t,this);
                 }
-            )
+            }
+            objects.objectsList.push(currentBlock);
         }
     }    
 }
-function initBasicWall(show=true,wallHeight=2200){
-
-    let currentColor;
-    let currentFill;
-    if(show){
-        currentColor=[255];
-        currentFill=[0];
-    }else{
-        currentColor=null;
-        currentFill=null;
-    }
-    
+function initCalWall(wallHeight=2200,sizex=2000,sizez=2000,strokeColor,fillColor){
     objects.objectsList.push(
         {
             name:"wall1",
             type:1,//1标准长方体
             position:{//中心点位置
-                x:-1000,
+                x:-sizex/2,
                 z:0,
                 y:wallHeight/2,
             },
             size:{
                 x:97,
-                z:2200,
+                z:sizez,
                 y:wallHeight,
             },
-            stroke:currentColor,
-            fill:currentFill,
+            stroke:strokeColor,
+            fill:fillColor,
             bump:{//立方体碰撞盒
                 size:{
                     x:90,
-                    z:2200,
+                    z:sizez,
                     y:wallHeight,
                 },
             }
-        },
+        }
+    );
+    objects.objectsList.push(
         {
             name:"wall2",
             type:1,//1标准长方体
             position:{//中心点位置
-                x:900,
+                x:sizex/2,
                 z:0,
                 y:wallHeight/2,
             },
             size:{
                 x:97,
-                z:2200,
+                z:sizez,
                 y:wallHeight,
             },
-            stroke:currentColor,
-            fill:currentFill,
+            stroke:strokeColor,
+            fill:fillColor,
             bump:{//立方体碰撞盒
                 size:{
                     x:90,
-                    z:2200,
+                    z:sizez,
                     y:wallHeight,
                 },
             }
-        },
+        }
+    );
+    objects.objectsList.push(
         {
             name:"wall3",
             type:1,//1标准长方体
             position:{//中心点位置
                 x:0,
-                z:-1000,
+                z:-sizez/2,
                 y:wallHeight/2,
             },
             size:{
-                x:2200,
+                x:sizex,
                 z:97,
                 y:wallHeight,
             },
-            stroke:currentColor,
-            fill:currentFill,
+            stroke:strokeColor,
+            fill:fillColor,
             bump:{//立方体碰撞盒
-                size:{//中心点位置
-                    x:2200,
-                    z:97,
+                size:{
+                    x:sizex,
+                    z:90,
                     y:wallHeight,
                 },
             }
-        },
+        }
+    );
+    objects.objectsList.push(
         {
             name:"wall4",
             type:1,//1标准长方体
             position:{//中心点位置
                 x:0,
-                z:900,
+                z:sizez/2,
                 y:wallHeight/2,
             },
             size:{
-                x:2200,
+                x:sizex,
                 z:97,
                 y:wallHeight,
             },
-            stroke:currentColor,
-            fill:currentFill,
+            stroke:strokeColor,
+            fill:fillColor,
             bump:{//立方体碰撞盒
-                size:{//中心点位置
-                    x:2200,
-                    z:97,
+                size:{
+                    x:sizex,
+                    z:90,
                     y:wallHeight,
                 },
             }
-        },
-        //支柱
+        }
+    );
+}
+function initCalWallBlocks(wallHeight=2200,sizex=2000,sizez=2000,strokeColor,fillColor){
+    objects.objectsList.push(
         {
             name:"z1",
             type:1,//1标准长方体
             position:{//中心点位置
-                x:-1000,
-                z:-1000,
+                x:-sizex/2,
+                z:sizez/2,
                 y:wallHeight/2,
             },
             size:{
-                x:100,
-                z:100,
+                x:97,
+                z:97,
                 y:wallHeight,
             },
-            stroke:currentColor,
-            fill:currentColor,
-        },
+            stroke:strokeColor,
+            fill:fillColor,
+        }
+    );
+    objects.objectsList.push(
         {
             name:"z2",
             type:1,//1标准长方体
             position:{//中心点位置
-                x:900,
-                z:-1000,
+                x:sizex/2,
+                z:sizez/2,
                 y:wallHeight/2,
             },
             size:{
-                x:100,
-                z:100,
+                x:97,
+                z:97,
                 y:wallHeight,
             },
-            stroke:currentColor,
-            fill:currentFill,
-        },
-        {
-            name:"z3",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:900,
-                z:900,
-                y:wallHeight/2,
-            },
-            size:{
-                x:100,
-                z:100,
-                y:wallHeight,
-            },
-            stroke:currentColor,
-            fill:currentFill,
-        },
-        {
-            name:"z4",
-            type:1,//1标准长方体
-            position:{//中心点位置
-                x:-1000,
-                z:900,
-                y:wallHeight/2,
-            },
-            size:{
-                x:100,
-                z:100,
-                y:wallHeight,
-            },
-            stroke:currentColor,
-            fill:currentFill,
+            stroke:strokeColor,
+            fill:fillColor,
         }
-    )
+    );
+    objects.objectsList.push(
+        {
+            name:"z2",
+            type:1,//1标准长方体
+            position:{//中心点位置
+                x:sizex/2,
+                z:-sizez/2,
+                y:wallHeight/2,
+            },
+            size:{
+                x:97,
+                z:97,
+                y:wallHeight,
+            },
+            stroke:strokeColor,
+            fill:fillColor,
+        }
+    );
+    objects.objectsList.push(
+        {
+            name:"z2",
+            type:1,//1标准长方体
+            position:{//中心点位置
+                x:-sizex/2,
+                z:-sizez/2,
+                y:wallHeight/2,
+            },
+            size:{
+                x:97,
+                z:97,
+                y:wallHeight,
+            },
+            stroke:strokeColor,
+            fill:fillColor,
+        }
+    );
 }
-function initBasicCelling(xsize=2000,xcount=20,zsize=2000,zcount=20,height=1300,f=(t,obj)=>{
-    obj.position.y=Math.sin(obj.paraList.x*obj.paraList.x+obj.paraList.z*obj.paraList.z+t/40)*150+1300;
-},plRatiox=1,plRatioy=1){
+function initBasicCelling(xsize=2000,xcount=20,zsize=2000,zcount=20,height=1300,f){
+    let plRatiox=1,plRatioy=1;
     for(let x=-xcount/2;x<xcount/2;x++){
         for(let z=-zcount/2;z<zcount/2;z++){
-            objects.objectsList.push(
-                {
-                    name:"sky",
-                    type:1,//1标准长方体
-                    paraList:{//携带的参数列表
-                        x:x/plRatiox,
-                        z:z/plRatioy,
-                    },
-                    position:{
-                        x:x*(xsize/xcount),
-                        z:z*(zsize/zcount),
-                        y:height,
-                    },
-                    size:{
-                        x:xsize/xcount,
-                        z:zsize/zcount,
-                        y:200,
-                    },
-                    strokeWeight:3,
-                    stroke:[100],
-                    fill:[0],
-                    change(t){
-                        f(t,this);
-                    },
+            let currentBlock={
+                name:"sky",
+                type:1,//1标准长方体
+                paraList:{//携带的参数列表
+                    x:x/plRatiox,
+                    z:z/plRatioy,
+                },
+                position:{
+                    x:x*(xsize/xcount),
+                    z:z*(zsize/zcount),
+                    y:height,
+                },
+                size:{
+                    x:xsize/xcount,
+                    z:zsize/zcount,
+                    y:200,
+                },
+                strokeWeight:3,
+                stroke:[100],
+                fill:[0],
+            }
+            if(arguments.length==6){
+                currentBlock.change=function(t){
+                    f(t,this);
                 }
-            )
+            }
+            objects.objectsList.push(currentBlock);
         }
     }    
 }
@@ -271,10 +279,48 @@ function initBasicDisplayScreen(name,position,heading,fuc){
             size:size,
             displayCubeSize:displayCubeSize,
             fuc:fuc,
-            stroke:[255,255,0],
+            stroke:[200],
             fill:null,
             bump:{
                 size:size
+            },
+            checkInShowArea:function(){//检测玩家是否进入检测区
+                let len=300;
+                let x=player.x;
+                let z=player.z;
+                if(this.size.z==20){
+                    if((x<this.position.x+this.size.x/2 && x>this.position.x-this.size.x/2) && (z<this.position.z+len && z>this.position.z-len)){
+                        return(true);
+                    }else{
+                        return(false);
+                    }
+                }else{
+                    if((z<this.position.z+this.size.z/2 && z>this.position.z-this.size.z/2) && (x<this.position.x+len && x>this.position.x-len)){
+                        return(true);
+                    }else{
+                        return(false);
+                    }
+                }
+            },
+            playerEnter(){//检测玩家进入，如果玩家在行走，就不显示
+                let x=player.x;
+                let z=player.z;
+                if(this.checkInShowArea(x,z)){
+                    if(!player.isWalking){
+                        this.stroke=[255,255,0];
+                    }
+                }else{
+                    this.stroke=[200];
+                }
+            },
+            showHUD:function(){//显示HUD界面，玩家停下来才能看到
+                let x=player.x;
+                let z=player.z;
+                if(!player.isWalking && !isRemovingHUD && this.checkInShowArea(x,z) && document.getElementById("t"+this.name)==undefined){
+                    editHUDobject(this.name,11,this.fuc,true);
+                }else if(!isRemovingHUD && !this.checkInShowArea(x,z) && document.getElementById("t"+this.name)!=undefined){
+                    editHUDobject(this.name,11,this.fuc,false);
+                }
             }
         }
     );

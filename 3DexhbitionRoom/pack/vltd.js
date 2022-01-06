@@ -1,15 +1,9 @@
-var player;
-var roomObjects
 var canvasList=[];//储存房间里的画板列表
 var calFrameCount=0;//计算过后的应有帧数
-var T;
 
-var _loadedPlayer;
-//var _loadedRoom;
-function preload(){
-    _loadedPlayer=loadJSON("./../pack/player/player.json");
-    //_loadedRoom=loadJSON("./../pack/rooms/displayRoom1.json");
-}
+/*鼠标转向*/
+var xrotation;
+var xdelta=0;
 function setup(){
     createCanvas(windowWidth,windowHeight,WEBGL);
     smooth();
@@ -26,10 +20,15 @@ function setup(){
             this.bumpR=player.bumpR;
             this.objectsList=objects;
             
+            this.isWalking=false;//是否在行走
+
             this.isWalkingForward=false;
             this.isWalkingBackward=false;
             this.isWalkingLeft=false;
             this.isWalkingRight=false;
+
+            this.thetarw=0;
+            this.thetaeh=0;
         }
         _calBump(x,z,cube){//返回x,z位置坐标的值
             if(cube.hasOwnProperty("bump") && cube.position.y+cube.bump.size.y/2>(this.y+player.height)/2){
@@ -60,6 +59,7 @@ function setup(){
             }
         }
         _walk(){
+            this.isWalking=true;
             this.moveSpeed=this.originMoveSpeed*(deltaTime/(50/3));//根据帧率计算行走速度
             for(let i=0;i<this.objectsList.length;i++){
                 let newPosition=this._calBump(this.x,this.z,this.objectsList[i]);
@@ -96,9 +96,9 @@ function setup(){
             0,-1,0);
         }
         update(){
-            //鼠标转向
-            this.thetarw=map(mouseX,width,0,2*PI,0);
+            //鼠标转向，x防线在mouseMove中实现
             this.thetaeh=map(mouseY,0,height,-PI/2+Number.MIN_VALUE,PI/2-Number.MIN_VALUE);
+
             //走路
             if(this.isWalkingForward){
                 this.walkForward();
@@ -115,7 +115,7 @@ function setup(){
             this.lookAround();
         }
     }
-    player=new Player(_loadedPlayer,objects.objectsList);
+    player=new Player(objects.player,objects.objectsList);
     for(let i=0;i<objects.objectsList.length;i++){
         currentObject=objects.objectsList[i];
         if(currentObject.type==11){//需要canvas画布
@@ -154,6 +154,14 @@ function draw(){
                     if(currentObject.hasOwnProperty("change") && currentObject.change!=null){
                         // eval(currentObject.change(calFrameCount));
                         currentObject.change(calFrameCount);
+                    }
+                    //HUD界面渲染
+                    if(currentObject.hasOwnProperty("showHUD") && currentObject.showHUD!=null){
+                        currentObject.showHUD();
+                    }
+                    //如果有玩家进入检测区效果就执行
+                    if(currentObject.hasOwnProperty("playerEnter") && currentObject.playerEnter!=null){
+                        currentObject.playerEnter();
                     }
                 }
                 push();
@@ -215,7 +223,24 @@ function draw(){
     player.update();
     //处理帧率
     calFrameCount+=deltaTime/(50/3);
-    console.log(deltaTime);
+}
+function mouseMoved(){
+    {//实现视线转向
+        let delta=mouseX-pmouseX;
+        if(delta>0){
+            xrotation=true;
+            xdelta=delta;
+        }else if(delta<0){
+            xrotation=false;
+            xdelta=-delta;
+        }
+        let rotateValue=0.008;
+        if(xrotation){
+            player.thetarw+=rotateValue*xdelta;
+        }else{
+            player.thetarw-=rotateValue*xdelta;
+        }
+    }
 }
 function keyPressed(){
     switch(keyCode){
@@ -236,16 +261,20 @@ function keyPressed(){
 function keyReleased(){
     switch(keyCode){
         case 87:
-            player.isWalkingForward=false;   
+            player.isWalkingForward=false; 
+            player.isWalking=false;  
             break;
         case 83:
             player.isWalkingBackward=false;  
+            player.isWalking=false;  
             break;
         case 65:
             player.isWalkingLeft=false; 
+            player.isWalking=false;  
             break;
         case 68:
             player.isWalkingRight=false;
+            player.isWalking=false;  
             break;
     }
 }
