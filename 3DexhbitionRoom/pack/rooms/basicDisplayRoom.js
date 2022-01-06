@@ -1,4 +1,4 @@
-var objects=initStruc(0,500);
+var objects=initStruc(0,0);
 let sizeX=1000;
 let sizeZ=2000;
 //生成地面
@@ -18,7 +18,7 @@ initBasicDisplayScreen(
     {x:0,z:-500,y:300},
     0,
     new TdFunctionFlat(
-        {author:"vezzzing",date:"2022.1.6"},
+        {author:"vezzzing",date:"2022.1.6",name:"233"},
         -5,5,80,
         -5,5,80,
         `sin(x*y+T)`,
@@ -30,8 +30,8 @@ initBasicDisplayScreen(
 );
 initBasicDisplayScreen(
     "displayscreen2",
-    {x:400,z:-500,y:300},
-    1,
+    {x:0,z:500,y:300},
+    0,
     new TdFunctionFlat(
         {author:"vezzzing",date:"2022.1.6"},
         -5,5,20,

@@ -53,7 +53,7 @@ for(let x=${this.fromx};x<=${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
     err(){
         return(
         `
-        fill(255);
+        canvasList[${this.canvasIndex}].fill(255);
         canvasList[${this.canvasIndex}].text("ERRRR",50,50);
         `
         );

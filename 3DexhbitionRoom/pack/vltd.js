@@ -219,6 +219,8 @@ function draw(){
         //     console.log("导入物体出错");
         // }
     }
+    console.log(cos(player.thetarw));
+    console.log(sin(player.thetarw));
     //加入玩家视角
     player.update();
     //处理帧率

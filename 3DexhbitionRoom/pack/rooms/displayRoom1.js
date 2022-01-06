@@ -234,6 +234,7 @@ initBasicDisplayScreen(
     {x:-500,z:-500,y:300},
     {x:1,z:1,y:1},
     new TdFunctionFlat(
+        {author:"vezzzing",date:"2022.1.6",name:"233"},
         -5,5,40,
         -5,5,40,
         `sin(sin(x)*cos(y)+T)`,

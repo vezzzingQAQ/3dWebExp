@@ -274,6 +274,7 @@ function initBasicDisplayScreen(name,position,heading,fuc){
     objects.objectsList.push(
         {
             name:name,
+            heading:heading,
             type:11,//11展示屏
             position:position,
             size:size,
@@ -288,14 +289,14 @@ function initBasicDisplayScreen(name,position,heading,fuc){
                 let len=300;
                 let x=player.x;
                 let z=player.z;
-                if(this.size.z==20){
-                    if((x<this.position.x+this.size.x/2 && x>this.position.x-this.size.x/2) && (z<this.position.z+len && z>this.position.z-len)){
+                if(this.heading==0){
+                    if((x<this.position.x+this.size.x/2 && x>this.position.x-this.size.x/2) && (z<this.position.z+len && z>this.position.z-len) && (abs(cos(player.thetarw))<0.6)){
                         return(true);
                     }else{
                         return(false);
                     }
                 }else{
-                    if((z<this.position.z+this.size.z/2 && z>this.position.z-this.size.z/2) && (x<this.position.x+len && x>this.position.x-len)){
+                    if((z<this.position.z+this.size.z/2 && z>this.position.z-this.size.z/2) && (x<this.position.x+len && x>this.position.x-len) && (abs(cos(player.thetarw))>0.4)){
                         return(true);
                     }else{
                         return(false);
