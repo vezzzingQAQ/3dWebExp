@@ -10,8 +10,9 @@ function setup(){
     class Player{
         constructor(player,objects){
             this.x=player.startPosition.x;
-            this.y=player.startPosition.y;
-            this.z=player.startPosition.z+player.height/2;
+            this.z=player.startPosition.z;
+            this.y=player.startPosition.y+player.height/2;
+
             this.height=player.height;
             this.originHeight=player.height;
             this.moveSpeed=player.moveSpeed;
@@ -219,8 +220,11 @@ function draw(){
         //     console.log("导入物体出错");
         // }
     }
-    console.log(cos(player.thetarw));
-    console.log(sin(player.thetarw));
+    {//测试代码
+        if(frameCount==10){
+            console.log(objects);
+        }
+    }
     //加入玩家视角
     player.update();
     //处理帧率

@@ -1,22 +1,22 @@
 var objects=initStruc(0,0);
-let sizeX=1000;
-let sizeZ=2000;
+let sizeX=1500;
+let sizeZ=1500;
+let placeR=400;
 //生成地面
-initBasicGround(sizeX,10,sizeZ,20,(t,obj)=>{
+initBasicGround(sizeX,10,sizeZ,10,(t,obj)=>{
     let zv=Math.sin(obj.paraList.x*obj.paraList.z+t/10);
-    obj.strokeWeight=(zv+1)*10;
-});
+    obj.size.y=(zv+1)*10;
+},[255,0,0],3,[0]);
 //生成天花板
-initBasicCelling(sizeX,10,sizeZ,20,1300,(t,obj)=>{
-    obj.position.y=Math.sin(obj.paraList.x*obj.paraList.x+obj.paraList.z*obj.paraList.z+t/40)*150+1300;
-});
+initBasicFunctionCelling(sizeX,12,sizeZ,12,500,(t,obj)=>{
+    obj.position.y=Math.sin(obj.paraList.x*obj.paraList.x+obj.paraList.z*obj.paraList.z+t/40)*150+900;
+},[0,255,0],3,[0]);
 //生成周围的墙
-initCalWall(2200,sizeX,sizeZ,[100],[0]);
-initCalWallBlocks(2200,sizeX,sizeZ,[100],[0]);
+// initCalWall(2200,sizeX,sizeZ,null,null);
 initBasicDisplayScreen(
     "displayscreen1",
-    {x:0,z:-500,y:300},
-    0,
+    {x:0,z:-placeR,y:300},
+    true,
     new TdFunctionFlat(
         {author:"vezzzing",date:"2022.1.6",name:"233"},
         -5,5,80,
@@ -30,8 +30,8 @@ initBasicDisplayScreen(
 );
 initBasicDisplayScreen(
     "displayscreen2",
-    {x:0,z:500,y:300},
-    0,
+    {x:0,z:placeR,y:300},
+    true,
     new TdFunctionFlat(
         {author:"vezzzing",date:"2022.1.6"},
         -5,5,20,
@@ -45,8 +45,8 @@ initBasicDisplayScreen(
 );
 initBasicDisplayScreen(
     "displayscreen3",
-    {x:-400,z:0,y:300},
-    1,
+    {x:-placeR,z:0,y:300},
+    false,
     new TdFunctionFlat(
         {author:"vezzzing",date:"2022.1.7"},
         -5,5,20,
@@ -59,9 +59,9 @@ initBasicDisplayScreen(
     )
 );
 initBasicDisplayScreen(
-    "displayscreen3",
-    {x:400,z:0,y:300},
-    1,
+    "displayscreen4",
+    {x:placeR,z:0,y:300},
+    false,
     new TdFunctionFlat(
         {author:"vezzzing",date:"2022.1.7"},
         -5,5,20,

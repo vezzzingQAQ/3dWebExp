@@ -1,5 +1,43 @@
-class TdFunctionFlat{
+class VFunction{
+    /**
+     * 所有展示物品的基类
+     * @param {{}} acobj 描述对象
+     */
+    constructor(acobj){
+        this.acobj=acobj;
+    }
+    log(){
+        console.log("VF"+this.acobj);
+    }
+}
+class TdFunction extends VFunction{
+    /**
+     * 要用到画板的函数对象基类
+     * @param {{}} acobj 描述对象
+     * @param {number} canvasIndex 画板index，会自动分配，无视即可
+     */
+    constructor(acobj,canvasIndex){
+        super(acobj);
+        this.canvasIndex=canvasIndex;
+    }
+}
+
+class TdFunctionFlat extends TdFunction{
+    /**
+     * z=f(x,y,[T]) 二维平面展示
+     * @param {{}} acobj 描述文件
+     * @param {number} fromx x=[fromx,tox]
+     * @param {number} tox x=[fromx,tox]
+     * @param {number} ax x方向的切分数量
+     * @param {number} fromy y=[fromy,toy]
+     * @param {number} toy y=[fromy,toy]
+     * @param {number} ay y方向的切分数量
+     * @param {string} sf 函数表达式 f(x,y);
+     * @param {string} schangef 对于每个 (x,z) 的操作
+     * @param {number} canvasIndex 画板index，会自动分配，无视即可
+     */
     constructor(acobj,fromx,tox,ax,fromy,toy,ay,sf,schangef,canvasIndex){
+        super(acobj,canvasIndex);
         this.type="2d";
         this.fromx=fromx;
         this.tox=tox;
@@ -7,12 +45,9 @@ class TdFunctionFlat{
         this.toy=toy;
         this.ax=ax;
         this.ay=ay;
-
-        this.acobj=acobj;
         
         this.sf=sf;//函数表达式
         this.schangef=schangef;//对于每个点的操作
-        this.canvasIndex=canvasIndex;//画布index
 
         this.timeCop=this.ax*this.ay;//时间复杂度
     }
@@ -36,7 +71,7 @@ class TdFunctionFlat{
     }
     toDisplayStr(){
         let textTemp=
-        `
+`
 rectMode(CENTER);
 background(0);
 for(let x=${this.fromx};x<=${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
@@ -47,7 +82,7 @@ for(let x=${this.fromx};x<=${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
         ${this.schangef}
     }
 }
-        `
+`
         return(textTemp);
     }
     err(){
@@ -59,8 +94,22 @@ for(let x=${this.fromx};x<=${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
         );
     }
 }
-class GlFunction{
-    constructor(fromx,tox,ax,fromy,toy,ay,sf,schangef){
+
+class GlTdFunction extends VFunction{
+    /**
+     * 
+     * @param {{}} acobj 描述文件
+     * @param {number} fromx x=[fromx,tox]
+     * @param {number} tox x=[fromx,tox]
+     * @param {number} ax x方向的切分数量
+     * @param {number} fromy y=[fromy,toy]
+     * @param {number} toy y=[fromy,toy]
+     * @param {number} ay y方向的切分数量
+     * @param {string} sf 函数表达式 f(x,y);
+     * @param {string} schangef 对于每个 (x,z) 的操作
+     */
+    constructor(acobj,fromx,tox,ax,fromy,toy,ay,sf,schangef){
+        super(acobj);
         this.type="3d";
         this.fromx=fromx;
         this.tox=tox;
@@ -89,6 +138,23 @@ class GlFunction{
             }
         pop();
         `
+        return(textTemp);
+    }
+    toDisplayStr(){
+        let textTemp=
+`
+push();
+    for(let x=${this.fromx};x<=${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
+        for(let y=${this.fromy};y<=${this.toy};y+=${(this.toy-this.fromy)/this.ay}){
+            let z=${this.sf};
+            push();
+            translate(map(x,${this.fromx},${this.tox},-40,40),z*15,map(y,${this.fromy},${this.toy},-40,40));
+            ${this.schangef}
+            pop();
+        }
+    }
+pop();
+`
         return(textTemp);
     }
     err(){
