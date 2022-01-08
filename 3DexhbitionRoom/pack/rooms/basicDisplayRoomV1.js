@@ -73,5 +73,19 @@ initBasicDisplayScreen(
         rect(px,py,map(z,-1,1,0,5));`
     )
 );
-
+initBasicDisplayBox(
+    "displayBox1",
+    {x:0,z:1000,y:100},
+    new GlTdFunction(
+        {author:"vezzzing",date:"2022.1.7"},
+        -2,2,10,
+        -2,2,10,
+        `sin(x*y+T)`,
+        `
+        fill(map(x,-2,2,0,255),map(y,-2,2,0,255),map(z,-1,1,0,255));
+        box(5);`
+    ),
+    {x:100,z:100,y:100},
+    {x:100,z:100,y:100}
+)
 

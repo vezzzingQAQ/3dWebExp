@@ -1,3 +1,8 @@
+// ********************************************************
+// V3D 执行文件：
+// 玩家操作&界面渲染
+// ********************************************************
+
 var canvasList=[];//储存房间里的画板列表
 var calFrameCount=0;//计算过后的应有帧数
 
@@ -198,9 +203,9 @@ function draw(){
                             break;
                         case 21:
                             box(currentObject.size.x,currentObject.size.y,currentObject.size.z);
-                            translate(0,currentObject.size.y/2+currentObject.containCubeSize.y/2,0);
+                            translate(0,currentObject.size.y/2+currentObject.displayBoxSize.y/2,0);
                             noFill();
-                            box(currentObject.containCubeSize.x,currentObject.containCubeSize.y,currentObject.containCubeSize.z);
+                            box(currentObject.displayBoxSize.x,currentObject.displayBoxSize.y,currentObject.displayBoxSize.z);
                             push();
                                 try{
                                     eval(currentObject.fuc.toStr());

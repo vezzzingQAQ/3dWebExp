@@ -332,13 +332,13 @@ function initCalWallBlocks(wallHeight=2200,sizex=2000,sizez=2000,strokeColor,fil
  * @param {Array<number>|null} fill P5-fill值
  * @param {number} enterLen HUD显示的检测区长度
  */
-function initDisplayScreen(name,position,heading,fuc,sw=300,sh=300,stroke=[200],strokeWeight=1,fill=null,enterLen=300){
+function initDisplayScreen(name,position,heading,fuc,sw=300,sh=300,sz=20,stroke=[200],strokeWeight=1,fill=null,enterLen=300){
     let size,displayCubeSize;
     if(heading){
-        size={x:sw,z:20,y:sh};
+        size={x:sw,z:sz,y:sh};
         displayCubeSize={x:sw,z:0,y:sh};
     }else{
-        size={x:20,z:sw,y:sh};
+        size={x:sz,z:sw,y:sh};
         displayCubeSize={x:0,z:sw,y:sh};
     }
     objects.objectsList.push(
@@ -407,9 +407,9 @@ function initDisplayScreen(name,position,heading,fuc,sw=300,sh=300,stroke=[200],
                 let x=player.x;
                 let z=player.z;
                 if(!player.isWalking && !isRemovingHUD && this.checkInShowArea(x,z) && document.getElementById("t"+this.name)==undefined){
-                    editHUDobject(this.name,11,this.fuc,true);
+                    editHUDobject(this.name,this.type,this.fuc,true);
                 }else if(!isRemovingHUD && !this.checkInShowArea(x,z) && document.getElementById("t"+this.name)!=undefined){
-                    editHUDobject(this.name,11,this.fuc,false);
+                    editHUDobject(this.name,this.type,this.fuc,false);
                 }
             },
         }
@@ -427,32 +427,94 @@ function initBasicDisplayScreen(name,position,heading,fuc){
     initDisplayScreen(name,position,heading,fuc);
 }
 
-function initBasicDisplayBox(name,position,sizeRto,fuc){
+/**
+ * 生成T21展示柜
+ * @param {string} name 名称
+ * @param {{x:number,y:number,z:number}} position 位置
+ * @param {GlTdFunction} fuc 展示的函数对象 
+ * @param {{x:number,y:number,z:number}} sizeBase 底座大小
+ * @param {{x:number,y:number,z:number}} sizeBox 展示盒大小
+ * @param {Array<number>|null} stroke P5-stroke值
+ * @param {number} strokeWeight P5-strokeWeight值
+ * @param {Array<number>|null} fill P5-fill值
+ * @param {number} enterR HUD显示区半径
+ */
+function initDisplayBox(name,position,fuc,sizeBase,sizeBox,stroke=[200],strokeWeight=1,fill=null,enterR=300){
     objects.objectsList.push(
         {
             name:name,
             type:21,//21展示柜
             position:position,
+            enterR:enterR,
             size:{
-                x:100*sizeRto.x,
-                z:100*sizeRto.z,
-                y:100,
+                x:sizeBase.x,
+                z:sizeBase.z,
+                y:sizeBase.y,
             },
-            containCubeSize:{//立体展柜特有
-                x:100*sizeRto.x,
-                z:100*sizeRto.z,
-                y:100*sizeRto.y,
+            displayBoxSize:{//立体展柜特有
+                x:sizeBox.x,
+                z:sizeBox.z,
+                y:sizeBox.y,
             },
             fuc:fuc,
-            stroke:[255],
-            fill:[0,200],
+            stroke:stroke,
+            strokeWeight:strokeWeight,
+            fill:fill,
             bump:{
                 size:{
-                    x:100*sizeRto.x,
-                    z:100*sizeRto.z,
-                    y:100*sizeRto.y,
+                    x:sizeBox.x,
+                    z:sizeBox.z,
+                    y:sizeBox.y,
                 }
-            }
+            },
+            checkInShowArea:function(){//检测玩家是否进入检测区
+                let len=this.enterR;
+                let x=player.x;
+                let z=player.z;
+                if(player.thetaeh<0.38 && player.thetaeh>-0.38){
+                    if(Math.sqrt((x-this.position.x)*(x-this.position.x)+(z-this.position.z)*(z-this.position.z))<len){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                }
+            },
+            playerEnter(){//检测玩家进入，如果玩家在行走，就不显示
+                let x=player.x;
+                let z=player.z;
+                if(this.checkInShowArea(x,z)){
+                    if(!player.isWalking){
+                        this.stroke=[255,255,0];
+                    }
+                }else{
+                    this.stroke=[200];
+                }
+            },
+            showHUD:function(){//显示HUD界面，玩家停下来才能看到
+                let x=player.x;
+                let z=player.z;
+                if(!player.isWalking && !isRemovingHUD && this.checkInShowArea(x,z) && document.getElementById("t"+this.name)==undefined){
+                    editHUDobject(this.name,this.type,this.fuc,true);
+                }else if(!isRemovingHUD && !this.checkInShowArea(x,z) && document.getElementById("t"+this.name)!=undefined){
+                    editHUDobject(this.name,this.type,this.fuc,false);
+                }
+            },
+
         },        
     );
+}
+
+/**
+ * 生成基本的T21展示柜
+ * @param {string} name 名称
+ * @param {{x:number,y:number,z:number}} position 位置
+ * @param {GlTdFunction} fuc 展示的函数对象 
+ * @param {{x:number,y:number,z:number}} sizeBase 底座大小
+ * @param {{x:number,y:number,z:number}} sizeBox 展示盒大小
+ */
+function initBasicDisplayBox(name,position,fuc,sizeBase,sizeBox){
+    initDisplayBox(name,position,fuc,
+        sizeBase,
+        sizeBox,
+        [200],1,null,330);
 }

@@ -35,7 +35,7 @@ function fadeOut(obj,time){
  */
 function editHUDobject(name,id,discribeObj,aom/*true/false制定移除或插入*/){
     switch(id){
-        case 11:
+        case 11://T11展示屏
             if(aom){
                 let htmlTemp=`
                 <div id="t${name}" class="t11HUD centerHUDp">
@@ -53,5 +53,23 @@ function editHUDobject(name,id,discribeObj,aom/*true/false制定移除或插入*
                 fadeOut(child,10);
             }
             break;
+        case 21://T21展示柜
+                if(aom){
+                    let htmlTemp=`
+                    <div id="t${name}" class="t21HUD centerHUDp">
+                        <p class="author">by ${discribeObj.acobj.author}</p>
+                        <br>
+                        <p class="date">at ${discribeObj.acobj.date}</p>
+                        <br>
+                        <pre class="code">${discribeObj.toDisplayStr()}</pre>
+                    </div>
+                    `;
+                    document.querySelector(".hudLayer").innerHTML+=htmlTemp;
+                }else{
+                    let child=document.getElementById("t"+name);
+                    isRemovingHUD=true;
+                    fadeOut(child,10);
+                }
+                break;
     }
 }
