@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D展览馆</title>
+    <link rel="stylesheet" type="text/css" href="../pack/csspack/style.css">
+    <script src="../support/p5.min.js"></script>
+    <script src="../pack/publicVariable.js"></script>
+    <script src="../pack/hudObj.js"></script>
+    <script src="../pack/mathObj.js"></script>
+    <script src="../pack/roomObj.js"></script>
+    <script src="../pack/vltd.js"></script>
+</head>
+<body>
+    <div class="hudLayer"></div>
+    <script>
+var objects=initStruc({x:0,z:0},{background:[250]});
+initCube(
+    "cube1",
+    {
+        x:110,
+        z:100,
+        y:150,
+    },
+    {
+        x:80,
+        z:80,
+        y:80,
+    },
+    {
+        x:80,
+        z:80,
+        y:80,
+    }
+);    
+initCube(
+    "cube1.1",
+    {
+        x:110,
+        z:100,
+        y:230,
+    },
+    {
+        x:80,
+        z:80,
+        y:80,
+    },
+    {
+        x:80,
+        z:80,
+        y:80,
+    }
+);    
+initCube(
+    "cube1.2",
+    {
+        x:110,
+        z:180,
+        y:230,
+    },
+    {
+        x:80,
+        z:80,
+        y:80,
+    },
+    {
+        x:80,
+        z:80,
+        y:80,
+    }
+);    
+
+initCube(
+    "cube2",
+    {
+        x:210,
+        z:100,
+        y:150,
+    },
+    {
+        x:80,
+        z:80,
+        y:80,
+    },
+    null,
+    [255,0,0],
+    4,
+    [120,220,210,20],
+);    
+initCube(
+    "cube4",
+    {
+        x:210,
+        z:-300,
+        y:150,
+    },
+    {
+        x:80,
+        z:80,
+        y:80,
+    },
+    null,
+    [255,0,255],
+    4,
+    null,
+    {
+        x:0,
+        z:0,
+        y:0,
+    },
+    (t,obj)=>{
+        obj.position.y=sin(t/10)*10+190;
+        obj.rotation.y+=0.001;
+    },
+);    
+
+    </script>
+</body>
+</html>

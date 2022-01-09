@@ -141,85 +141,10 @@ function draw(){
             for(let i=0;i<objects.objectsList.length;i++){
                 let currentObject=objects.objectsList[i];
                 {//渲染物体
-                    if(currentObject.hasOwnProperty("strokeWeight") && currentObject.strokeWeight!=null){
-                        strokeWeight(currentObject.strokeWeight);
-                    }else{
-                        strokeWeight(1);
-                    }
-                    if(currentObject.hasOwnProperty("stroke") && currentObject.stroke!=null){
-                        stroke.apply(null,currentObject.stroke);
-                    }else{
-                        noStroke();
-                    }
-                    if(currentObject.hasOwnProperty("fill") && currentObject.fill!=null){
-                        fill.apply(null,currentObject.fill);
-                    }else{
-                        noFill();
-                    }
-                    //解析运动函数
-                    if(currentObject.hasOwnProperty("change") && currentObject.change!=null){
-                        // eval(currentObject.change(calFrameCount));
-                        currentObject.change(calFrameCount);
-                    }
-                    //HUD界面渲染
-                    if(currentObject.hasOwnProperty("showHUD") && currentObject.showHUD!=null){
-                        currentObject.showHUD();
-                    }
-                    //如果有玩家进入检测区效果就执行
-                    if(currentObject.hasOwnProperty("playerEnter") && currentObject.playerEnter!=null){
-                        currentObject.playerEnter();
+                    if(currentObject.hasOwnProperty("display")){
+                        currentObject.display(T);
                     }
                 }
-                push();
-                    translate(currentObject.position.x,currentObject.position.y,currentObject.position.z);
-                    if(currentObject.hasOwnProperty("rotation") && currentObject.rotation!=null){
-                        rotateX(currentObject.rotation.x);
-                        rotateY(currentObject.rotation.y);
-                        rotateZ(currentObject.rotation.z);
-                    }
-                    switch(currentObject.type){
-                        case 1:
-                            box(currentObject.size.x,currentObject.size.y,currentObject.size.z);
-                            break;
-                        case 2:
-                            sphere(currentObject.size.r);
-                            break;
-                        case 3:
-                            cone(currentObject.size.r,currentObject.size.h);
-                            break;
-                        case 4:
-                            cylinder(currentObject.size.r,currentObject.size.h);
-                            break;
-                        case 11:
-                            box(currentObject.size.x,currentObject.size.y,currentObject.size.z);
-                            //绘制画板
-                            try{
-                                eval(currentObject.fuc.toStr());
-                            }catch{
-                                eval(currentObject.fuc.err());
-                            }
-                            texture(canvasList[currentObject.fuc.canvasIndex]);
-                            box(currentObject.displayCubeSize.x,currentObject.displayCubeSize.y,currentObject.displayCubeSize.z);
-                            break;
-                        case 21:
-                            box(currentObject.size.x,currentObject.size.y,currentObject.size.z);
-                            translate(0,currentObject.size.y/2+currentObject.displayBoxSize.y/2,0);
-                            noFill();
-                            box(currentObject.displayBoxSize.x,currentObject.displayBoxSize.y,currentObject.displayBoxSize.z);
-                            push();
-                                try{
-                                    eval(currentObject.fuc.toStr());
-                                }catch{
-                                    pop();
-                                    eval(currentObject.fuc.err());
-                                }
-                            pop();
-                            break;
-                        default:
-                            console.log("无法识别的物体类型");
-                            break;
-                    }
-                pop();
             }
         // }catch{
         //     console.log("导入物体出错");

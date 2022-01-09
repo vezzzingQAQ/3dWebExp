@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D展览馆</title>
+    <link rel="stylesheet" type="text/css" href="../pack/csspack/lightStyle.css">
+    <script src="../support/p5.min.js"></script>
+    <script src="../pack/publicVariable.js"></script>
+    <script src="../pack/hudObj.js"></script>
+    <script src="../pack/mathObj.js"></script>
+    <script src="../pack/roomObj.js"></script>
+    <script src="../pack/vltd.js"></script>
+</head>
+<body>
+    <div class="hudLayer"></div>
+    <script>
+var objects=initStruc({x:0,z:0},{background:[250]});
+initBasicDisplayBox(
+    "displayBox1",
+    {x:-400,z:-400,y:100},
+    new GlTdFunction(
+        {author:"vezzzing",date:"2022.1.7"},
+        -2,2,10,
+        -2,2,10,
+        `sin(x*y+T)`,
+        `
+        strokeWeight(0.3);
+        stroke(0);
+        fill(map(x,-2,2,0,255),map(y,-2,2,0,255),map(z,-1,1,0,255));
+        box(15);`
+    ),
+    {x:100,z:100,y:100},
+    {x:100,z:100,y:150}
+);
+initBasicDisplayBox(
+    "displayBox2",
+    {x:400,z:-400,y:100},
+    new GlTdFunction(
+        {author:"vezzzing",date:"2022.1.7"},
+        -2,2,30,
+        -2,2,30,
+        `sin(sin(x)*cos(y-T))`,
+        `
+        noStroke();
+        fill(map(x,-2,2,0,255),map(y,-2,2,0,255),map(z,-1,1,0,255));
+        box(5);`
+    ),
+    {x:100,z:100,y:100},
+    {x:100,z:100,y:100}
+);
+initBasicDisplayBox(
+    "displayBox3",
+    {x:400,z:400,y:100},
+    new GlTdFunction(
+        {author:"vezzzing",date:"2022.1.7"},
+        -2,2,30,
+        -2,2,30,
+        `sin(x*x+y*y-T)/2`,
+        `
+        strokeWeight(0.3);
+        noStroke();
+        fill(map(x,-2,2,255,55),map(y,-2,2,0,255),map(z,-1,1,0,255));
+        box(5);`
+    ),
+    {x:100,z:100,y:100},
+    {x:100,z:100,y:50}
+);
+initBasicDisplayBox(
+    "displayBox4",
+    {x:-400,z:400,y:100},
+    new GlTdFunction(
+        {author:"vezzzing",date:"2022.1.7"},
+        -2,2,30,
+        -2,2,30,
+        `sin(x+y*y-T)/2`,
+        `
+        strokeWeight(0.3);
+        noStroke();
+        fill(map(x,-2,2,255,55),map(y,-2,2,0,255),map(z,-1,1,0,255));
+        box(5);`
+    ),
+    {x:100,z:100,y:200},
+    {x:100,z:100,y:50}
+);
+    </script>
+</body>
+</html>

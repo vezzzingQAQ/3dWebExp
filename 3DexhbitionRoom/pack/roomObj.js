@@ -5,11 +5,11 @@
 
 /**
  * 
- * @param {number} x 玩家出生点x坐标
- * @param {number} z 玩家出生点z坐标
- * @returns objects对象的值
+ * @param {{x:number,z:number}} param0 玩家的位置 
+ * @param {{background:Array<number>}} param1 全局参数
+ * @returns 
  */
-function initStruc(x=0,z=0){
+function initStruc({x=0,z=0},{background=[0]}){
     return(
         {
             player:{
@@ -23,11 +23,48 @@ function initStruc(x=0,z=0){
                 "moveHeightRange":9,
                 "bumpR":120
             },
+            global:{
+                background:background
+            },
             objectsList:[
         
             ]        
         }
     );
+}
+
+/**
+ * 生成基本的长方体
+ * @param {string} name 名称
+ * @param {{x:number,y:number,z:number}} position 位置
+ * @param {{x:number,y:number,z:number}} size 大小
+ * @param {{x:number,y:number,z:number}} bump 碰撞盒
+ * @param {Array<number>|null} stroke P5-stroke值
+ * @param {number} strokeWeight P5-strokeWeight值
+ * @param {Array<number>|null} fill P5-fill值
+ * @param {{x:number,y:number,z:number}} rotation 旋转量
+ * @param {(t:number,obj:object)=>void} f 动效函数，obj是自身this
+ */
+function initCube(name,position,size,bump,stroke=[200],strokeWeight=1,fill=null,rotation={x:0,z:0,y:0},f=null){
+    let currentBlock={
+        name:name,
+        type:1,//1标准长方体
+        position:position,
+        rotation:rotation,
+        size:size,
+        strokeWeight:strokeWeight,
+        stroke:stroke,
+        fill:fill,
+    }
+    if(bump!=null){
+        currentBlock.bump={size:bump};
+    }
+    if(f!=null){
+        currentBlock.change=(t)=>{
+            f(t,currentBlock);
+        }
+    }
+    objects.objectsList.push(currentBlock);
 }
 
 /**
@@ -320,19 +357,22 @@ function initCalWallBlocks(wallHeight=2200,sizex=2000,sizez=2000,strokeColor,fil
 }
 
 /**
- * 生成T11展示屏
+ * 生成展示屏
+ * @param {number} type 类型  
  * @param {string} name 名称
  * @param {{x:number,y:number,z:number}} position 位置
  * @param {boolean} heading 朝向：true->z ; false->x
  * @param {TdFunction} fuc 展示的函数对象
  * @param {number} sw 宽度
  * @param {number} sh 高度
+ * @param {number} sz 厚度
  * @param {Array<number>|null} stroke P5-stroke值
  * @param {number} strokeWeight P5-strokeWeight值
  * @param {Array<number>|null} fill P5-fill值
  * @param {number} enterLen HUD显示的检测区长度
+ * @param {Array<number>|null} enterStroke 进入HUD显示区时的描边颜色
  */
-function initDisplayScreen(name,position,heading,fuc,sw=300,sh=300,sz=20,stroke=[200],strokeWeight=1,fill=null,enterLen=300){
+function initDisplayScreen(type,name,position,heading,fuc,sw=300,sh=300,sz=20,stroke=[200],strokeWeight=1,fill=null,enterLen=300,enterStroke=null){
     let size,displayCubeSize;
     if(heading){
         size={x:sw,z:sz,y:sh};
@@ -345,7 +385,7 @@ function initDisplayScreen(name,position,heading,fuc,sw=300,sh=300,sz=20,stroke=
         {
             name:name,
             heading:heading,
-            type:11,//11展示屏
+            type:type,//11展示屏
             position:position,
 
             originPosition:position,//保存初始位置
@@ -357,6 +397,9 @@ function initDisplayScreen(name,position,heading,fuc,sw=300,sh=300,sz=20,stroke=
             fill:fill,
 
             enterLen:enterLen,
+
+            enterStroke:enterStroke,
+
             bump:{
                 size:size
             },
@@ -396,8 +439,8 @@ function initDisplayScreen(name,position,heading,fuc,sw=300,sh=300,sz=20,stroke=
                 let x=player.x;
                 let z=player.z;
                 if(this.checkInShowArea(x,z)){
-                    if(!player.isWalking){
-                        this.stroke=[255,255,0];
+                    if(!player.isWalking && this.enterStroke!=null){
+                        this.stroke=this.enterStroke;
                     }
                 }else{
                     this.stroke=[200];
@@ -406,7 +449,7 @@ function initDisplayScreen(name,position,heading,fuc,sw=300,sh=300,sz=20,stroke=
             showHUD:function(){//显示HUD界面，玩家停下来才能看到
                 let x=player.x;
                 let z=player.z;
-                if(!player.isWalking && !isRemovingHUD && this.checkInShowArea(x,z) && document.getElementById("t"+this.name)==undefined){
+                if(!player.isWalking && this.checkInShowArea(x,z) && document.getElementById("t"+this.name)==undefined){
                     editHUDobject(this.name,this.type,this.fuc,true);
                 }else if(!isRemovingHUD && !this.checkInShowArea(x,z) && document.getElementById("t"+this.name)!=undefined){
                     editHUDobject(this.name,this.type,this.fuc,false);
@@ -423,27 +466,29 @@ function initDisplayScreen(name,position,heading,fuc,sw=300,sh=300,sz=20,stroke=
  * @param {boolean} heading 朝向：true->z ; false->x
  * @param {TdFunction} fuc 展示的函数对象
  */
-function initBasicDisplayScreen(name,position,heading,fuc){
-    initDisplayScreen(name,position,heading,fuc);
+function initBasicDisplayScreen(name,position,heading,fuc,enterStroke=null){
+    initDisplayScreen(11,name,position,heading,fuc,300,300,20,[200],1,null,300,enterStroke);
 }
 
 /**
- * 生成T21展示柜
+ * 生成展示柜
+ * @param {number} type 类型
  * @param {string} name 名称
  * @param {{x:number,y:number,z:number}} position 位置
- * @param {GlTdFunction} fuc 展示的函数对象 
+ * @param {GlFunction} fuc 展示的函数对象 
  * @param {{x:number,y:number,z:number}} sizeBase 底座大小
  * @param {{x:number,y:number,z:number}} sizeBox 展示盒大小
  * @param {Array<number>|null} stroke P5-stroke值
  * @param {number} strokeWeight P5-strokeWeight值
  * @param {Array<number>|null} fill P5-fill值
  * @param {number} enterR HUD显示区半径
+ * @param {Array<number>|null} enterStroke 进入HUD显示区时的描边颜色
  */
-function initDisplayBox(name,position,fuc,sizeBase,sizeBox,stroke=[200],strokeWeight=1,fill=null,enterR=300){
+function initDisplayBox(type,name,position,fuc,sizeBase,sizeBox,stroke=[200],strokeWeight=1,fill=null,enterR=300,enterStroke=null){
     objects.objectsList.push(
         {
             name:name,
-            type:21,//21展示柜
+            type:type,
             position:position,
             enterR:enterR,
             size:{
@@ -460,6 +505,9 @@ function initDisplayBox(name,position,fuc,sizeBase,sizeBox,stroke=[200],strokeWe
             stroke:stroke,
             strokeWeight:strokeWeight,
             fill:fill,
+
+            enterStroke:enterStroke,
+
             bump:{
                 size:{
                     x:sizeBox.x,
@@ -483,8 +531,8 @@ function initDisplayBox(name,position,fuc,sizeBase,sizeBox,stroke=[200],strokeWe
                 let x=player.x;
                 let z=player.z;
                 if(this.checkInShowArea(x,z)){
-                    if(!player.isWalking){
-                        this.stroke=[255,255,0];
+                    if(!player.isWalking && this.enterStroke!=null){
+                        this.stroke=this.enterStroke;
                     }
                 }else{
                     this.stroke=[200];
@@ -493,13 +541,12 @@ function initDisplayBox(name,position,fuc,sizeBase,sizeBox,stroke=[200],strokeWe
             showHUD:function(){//显示HUD界面，玩家停下来才能看到
                 let x=player.x;
                 let z=player.z;
-                if(!player.isWalking && !isRemovingHUD && this.checkInShowArea(x,z) && document.getElementById("t"+this.name)==undefined){
+                if(!player.isWalking && this.checkInShowArea(x,z) && document.getElementById("t"+this.name)==undefined){
                     editHUDobject(this.name,this.type,this.fuc,true);
                 }else if(!isRemovingHUD && !this.checkInShowArea(x,z) && document.getElementById("t"+this.name)!=undefined){
                     editHUDobject(this.name,this.type,this.fuc,false);
                 }
             },
-
         },        
     );
 }
@@ -508,13 +555,14 @@ function initDisplayBox(name,position,fuc,sizeBase,sizeBox,stroke=[200],strokeWe
  * 生成基本的T21展示柜
  * @param {string} name 名称
  * @param {{x:number,y:number,z:number}} position 位置
- * @param {GlTdFunction} fuc 展示的函数对象 
+ * @param {GlFunction} fuc 展示的函数对象 
  * @param {{x:number,y:number,z:number}} sizeBase 底座大小
  * @param {{x:number,y:number,z:number}} sizeBox 展示盒大小
+ * @param {Array<number>|null} enterStroke 进入HUD显示区时的描边颜色
  */
-function initBasicDisplayBox(name,position,fuc,sizeBase,sizeBox){
-    initDisplayBox(name,position,fuc,
+function initBasicDisplayBox(name,position,fuc,sizeBase,sizeBox,enterStroke=null){
+    initDisplayBox(21,name,position,fuc,
         sizeBase,
         sizeBox,
-        [200],1,null,330);
+        [200],1,null,330,enterStroke);
 }

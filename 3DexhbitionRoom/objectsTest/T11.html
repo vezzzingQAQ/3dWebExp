@@ -11,10 +11,27 @@
     <script src="../pack/hudObj.js"></script>
     <script src="../pack/mathObj.js"></script>
     <script src="../pack/roomObj.js"></script>
-    <script src="../pack/rooms/basicDisplayRoomV1.js"></script>
     <script src="../pack/vltd.js"></script>
 </head>
 <body>
     <div class="hudLayer"></div>
+    <script>
+var objects=initStruc({x:0,z:0},{background:[250]});
+initBasicDisplayScreen(
+    "displayscreen4",
+    {x:500,z:0,y:300},
+    false,
+    new TdFunctionFlat(
+        {author:"vezzzing",date:"2022.1.7"},
+        -5,5,80,
+        -5,5,80,
+        `sin(x*x+sin(y)*y+T)`,
+        `
+        stroke(0);
+        fill(map(x,-5,5,0,255),map(z,-1,1,255,0),map(z,-1,1,0,255));
+        rect(px,py,map(z,-1,1,0,5));`
+    ),null
+);
+    </script>
 </body>
 </html>

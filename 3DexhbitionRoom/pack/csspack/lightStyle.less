@@ -1,0 +1,111 @@
+//函数声明区
+.fullScreen(){
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+}
+.basicTextType(){
+    font-size: 15px;
+    color: rgb(7, 7, 7);
+    letter-spacing: 2px;
+}
+.LargeTextType(){
+    font-size: 20px;
+    color: rgb(7, 7, 7);
+    letter-spacing: 2px;
+}
+.basicTransition(){
+    transition: 0.3s ease-in-out;
+}
+.largeBorderRadius(){
+    border-radius: 30px;
+}
+.glassBorder(){//毛玻璃边框
+    border-top:1px solid rgba(36, 36, 36, 0.5);
+    border-left: 1px solid rgba(255,255,255,0.4);
+    border-bottom: 1px solid rgba(15, 15, 15, 0.267);
+    border-right: 1px solid rgba(3, 3, 3, 0.377);
+}
+.basicBorder(){//基本边框
+    border: 2px solid rgba(22, 22, 22, 0.5);
+}
+//动画样式区
+@keyframes moveAfadeIn_c{
+    0%{
+        top: -100vh;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgb(44, 11, 105);
+        backdrop-filter: blur(0);
+        border-radius: 0;
+    }
+    50%{
+        top: -10vh;
+        left: 0;
+        width: 100vw;
+        height: 110vh;
+        background-color: transparent;
+        backdrop-filter: blur(0);
+        border-radius: 0;
+    }
+    100%{
+        top: 10vh;
+        left: 10vw;
+        height: 80vh;
+        width: 80vw;
+        backdrop-filter: blur(8px);
+        background-color: rgba(255,255,255,0.2);
+        .basicBorder();
+    }
+}
+@keyframes moveAfadeOut_c{
+    0%{
+        backdrop-filter: blur(14px);
+        opacity: 1;
+    }
+    100%{
+        backdrop-filter: blur(0);
+        opacity: 0;
+    }
+}
+//界面修改区
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: rgb(241, 241, 241);
+    main{
+        .fullScreen();
+        z-index: 1;
+    }
+    .hudLayer{
+        .fullScreen();
+        z-index: 2;
+        background-color: transparent;
+        .centerHUDp{
+            .basicTransition();
+            padding: 20px;
+            position: fixed;
+            z-index: 3;
+            overflow: hidden;
+            animation-name: moveAfadeIn_c;
+            animation-iteration-count: 1;
+            animation-duration: 1s;
+            animation-fill-mode: forwards;
+            .author{
+                .LargeTextType();
+            }
+            .date{
+                .basicTextType();
+            }
+            .code{
+                color: rgba(0, 0, 0, 0.788);
+            }
+        }
+    }
+}

@@ -99,19 +99,10 @@ for(let x=${this.fromx};x<=${this.tox};x+=${(this.tox-this.fromx)/this.ax}){
         );
     }
 }
-class GlFunction extends VFunction{
-    /**
-     * WebGL函数
-     * @param {{}} acobj 描述文件
-     */
-    constructor(acobj){
-        super(acobj);
-    }
-}
 
-class GlTdFunction extends GlFunction{
+class GlTdFunction extends VFunction{
     /**
-     * z=f(x,y,[T])
+     * 
      * @param {{}} acobj 描述文件
      * @param {number} fromx x=[fromx,tox]
      * @param {number} tox x=[fromx,tox]
