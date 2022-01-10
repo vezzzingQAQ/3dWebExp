@@ -28,6 +28,17 @@
 |sh|高度|300|
 |sz|厚度|20|
 |enterLen|前后方向上检测显示HUD的检测区宽度|300|
+#### TS规范
+```typescript
+/**
+ * 显示基本T11的展示屏
+ * @param {string} name 名称【不能重复】
+ * @param {{x:number,y:number,z:number}} position 位置
+ * @param {boolean} heading 朝向：true->z ; false->x
+ * @param {TdFunction} fuc 展示的函数对象
+ * @param {Array<number>|null} enterStroke 玩家进入HUD显示区时描边变色
+ */
+```
 #### 创建
 ```javascript
 initBasicDisplayScreen(
@@ -45,6 +56,11 @@ initBasicDisplayScreen(
         rect(px,py,map(z,-1,1,0,5));`
     ),null
 );
-```
-*vezzzing 2022.1.9 萧山 家*
+```   
+*vezzzing 2022*
+
 *v3d asso : ivex ds*
+<br>
+<br>
+
+

@@ -26,6 +26,18 @@
 |fill|同Processing|null|
 |strokeWeight|同Processing|1|
 |enterR|HUD检测区半径|330|
+#### TS规范
+```typescript
+/**
+ * 生成基本的T21展示柜
+ * @param {string} name 名称
+ * @param {{x:number,y:number,z:number}} position 位置
+ * @param {GlFunction} fuc 展示的函数对象 
+ * @param {{x:number,y:number,z:number}} sizeBase 底座大小
+ * @param {{x:number,y:number,z:number}} sizeBox 展示盒大小
+ * @param {Array<number>|null} enterStroke 进入HUD显示区时的描边颜色
+ */
+```
 #### 创建
 ```javascript
 initBasicDisplayBox(
@@ -46,5 +58,8 @@ initBasicDisplayBox(
     {x:100,z:100,y:100}
 );
 ```
-*vezzzing 2022.1.9 萧山 家*
+*vezzzing 2022*
+
 *v3d asso : ivex ds*
+<br>
+<br>

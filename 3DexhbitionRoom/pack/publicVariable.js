@@ -6,3 +6,5 @@ var player;
 var roomObjects
 
 var T;
+
+const PI=Math.PI;

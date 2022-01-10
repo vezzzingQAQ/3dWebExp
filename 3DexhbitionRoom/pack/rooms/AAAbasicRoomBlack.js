@@ -3,12 +3,12 @@ let sizeX=1500;
 let sizeZ=1500;
 let placeR=400;
 //生成地面
-initBasicGround(sizeX,10,sizeZ,10,(t,obj)=>{
+initBasicFunctionGround(sizeX,10,sizeZ,10,0,0,(t,obj)=>{
     let zv=Math.sin(obj.paraList.x*obj.paraList.z+t/10);
     obj.size.y=(zv+1)*10;
-},[255,0,0],3,[0]);
+},[255,0,0],3,[0],10,10);
 //生成天花板
-initBasicFunctionCelling(sizeX,12,sizeZ,12,500,(t,obj)=>{
+initBasicFunctionCelling(sizeX,12,sizeZ,12,0,0,1300,(t,obj)=>{
     obj.position.y=Math.sin(obj.paraList.x*obj.paraList.x+obj.paraList.z*obj.paraList.z+t/40)*150+900;
 },[0,255,0],3,[0]);
 //生成周围的墙

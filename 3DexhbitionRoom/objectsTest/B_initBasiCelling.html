@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D展览馆</title>
+    <link rel="stylesheet" type="text/css" href="../pack/csspack/style.css">
+    <script src="../support/p5.min.js"></script>
+    <script src="../pack/publicVariable.js"></script>
+    <script src="../pack/hudObj.js"></script>
+    <script src="../pack/mathObj.js"></script>
+    <script src="../pack/roomObj.js"></script>
+    <script src="../pack/vltd.js"></script>
+</head>
+<body>
+    <div class="hudLayer"></div>
+    <script>
+var objects=initStruc({x:300,z:0,ud:true},{background:[250]});
+//initBasicFunctionCelling();
+initBasicFunctionCelling(1000,20,1000,20,500,500);
+initBasicFunctionCelling(
+    1000,20,1000,20,
+    500,-500,
+    1300,
+    (t,self)=>{
+        let x=self.paraList.x;
+        let z=self.paraList.z;
+        let y=sin(x*x+z*z-t/100)*100;
+        self.position.y=y+self.paraList.height;
+    }
+);
+initBasicFunctionCelling(
+    1000,20,1000,20,
+    -500,500,
+    1300,
+    (t,self)=>{
+        let x=self.paraList.x;
+        let z=self.paraList.z;
+        let y=sin(x*z-t/100);
+        self.position.y=y*100+self.paraList.height;
+        self.fill=[map(y,-1,1,70,240)];
+    },
+    [0],3,[250]
+);
+initBasicFunctionCelling(
+    1000,20,1000,20,
+    -500,-500,
+    1300,
+    (t,self)=>{
+        let x=self.paraList.x;
+        let z=self.paraList.z;
+        let y=sin(x*z-t/100);
+        self.position.y=y*20+self.paraList.height;
+        self.fill=[map(y,-1,1,70,240)];
+    },
+    [0],3,[250],
+    10,10
+);
+    </script>
+</body>
+</html>

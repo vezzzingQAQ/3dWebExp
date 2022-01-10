@@ -9,7 +9,7 @@
  * @param {{background:Array<number>}} param1 全局参数
  * @returns 
  */
-function initStruc({x=0,z=0},{background=[0]}){
+function initStruc({x=0,z=0,ud=false},{background=[0]}){
     return(
         {
             player:{
@@ -21,7 +21,8 @@ function initStruc({x=0,z=0},{background=[0]}){
                 "height":170,
                 "moveSpeed":10,
                 "moveHeightRange":9,
-                "bumpR":120
+                "bumpR":120,
+                "ud":ud,
             },
             global:{
                 background:background
@@ -38,14 +39,15 @@ function initStruc({x=0,z=0},{background=[0]}){
  * @param {string} name 名称
  * @param {{x:number,y:number,z:number}} position 位置
  * @param {{x:number,y:number,z:number}} size 大小
- * @param {{x:number,y:number,z:number}} bump 碰撞盒
+ * @param {{x:number,y:number,z:number}|null} bump 碰撞盒
  * @param {Array<number>|null} stroke P5-stroke值
  * @param {number} strokeWeight P5-strokeWeight值
  * @param {Array<number>|null} fill P5-fill值
- * @param {{x:number,y:number,z:number}} rotation 旋转量
- * @param {(t:number,obj:object)=>void} f 动效函数，obj是自身this
+ * @param {{x:number,y:number,z:number}|null} rotation 旋转量
+ * @param {(t:number,obj:object)=>void|null} f 动效函数，obj是自身this
+ * @param {{}} paraList 携带的参数列表
  */
-function initCube(name,position,size,bump,stroke=[200],strokeWeight=1,fill=null,rotation={x:0,z:0,y:0},f=null){
+function initCube(name,position,size,bump=null,stroke=[200],strokeWeight=1,fill=null,rotation=null,f=null,paraList={}){
     let currentBlock={
         name:name,
         type:1,//1标准长方体
@@ -55,9 +57,106 @@ function initCube(name,position,size,bump,stroke=[200],strokeWeight=1,fill=null,
         strokeWeight:strokeWeight,
         stroke:stroke,
         fill:fill,
+        paraList:paraList,
     }
     if(bump!=null){
         currentBlock.bump={size:bump};
+    }
+    if(f!=null){
+        currentBlock.change=(t)=>{
+            f(t,currentBlock);
+        }
+    }
+    objects.objectsList.push(currentBlock);
+}
+
+/**
+ * 生成基本的球体
+ * @param {string} name 名称
+ * @param {{x:number,y:number,z:number}} position 位置
+ * @param {{r:number}} size 大小
+ * @param {Array<number>|null} stroke P5-stroke值
+ * @param {number} strokeWeight P5-strokeWeight值
+ * @param {Array<number>|null} fill P5-fill值
+ * @param {{x:number,y:number,z:number}|null} rotation 旋转量
+ * @param {(t:number,obj:object)=>void|null} f 动效函数，obj是自身this
+ * @param {{}} paraList 携带的参数列表
+ */
+function initSphere(name,position,size,stroke=[200],strokeWeight=1,fill=null,rotation=null,f=null,paraList={}){
+    let currentBlock={
+        name:name,
+        type:2,//2标准球体
+        position:position,
+        rotation:rotation,
+        size:size,
+        strokeWeight:strokeWeight,
+        stroke:stroke,
+        fill:fill,
+        paraList:paraList,
+    }
+    if(f!=null){
+        currentBlock.change=(t)=>{
+            f(t,currentBlock);
+        }
+    }
+    objects.objectsList.push(currentBlock);
+}
+
+/**
+ * 生成基本的圆锥
+ * @param {string} name 名称
+ * @param {{x:number,y:number,z:number}} position 位置
+ * @param {{r:number,h:number}} size 大小
+ * @param {Array<number>|null} stroke P5-stroke值
+ * @param {number} strokeWeight P5-strokeWeight值
+ * @param {Array<number>|null} fill P5-fill值
+ * @param {{x:number,y:number,z:number}|null} rotation 旋转量
+ * @param {(t:number,obj:object)=>void|null} f 动效函数，obj是自身this
+ * @param {{}} paraList 携带的参数列表
+ */
+function initCone(name,position,size,stroke=[200],strokeWeight=1,fill=null,rotation=null,f=null,paraList={}){
+    let currentBlock={
+        name:name,
+        type:3,//3标准圆锥
+        position:position,
+        rotation:rotation,
+        size:size,
+        strokeWeight:strokeWeight,
+        stroke:stroke,
+        fill:fill,
+        paraList:paraList,
+    }
+    if(f!=null){
+        currentBlock.change=(t)=>{
+            f(t,currentBlock);
+        }
+    }
+    objects.objectsList.push(currentBlock);
+}
+
+/**
+ * 生成基本的圆柱
+ * @param {string} name 名称
+ * @param {{x:number,y:number,z:number}} position 位置
+ * @param {{r:number,h:number}} size 大小
+ * @param {Array<number>|null} stroke P5-stroke值
+ * @param {number} strokeWeight P5-strokeWeight值
+ * @param {Array<number>|null} fill P5-fill值
+ * @param {{x:number,y:number,z:number}|null} rotation 旋转量
+ * @param {(t:number,obj:object)=>void|null} f 动效函数，obj是自身this
+ * @param {{}} paraList 携带的参数列表
+ */
+ function initCylinder(name,position,size,stroke=[200],strokeWeight=1,fill=null,rotation=null,f=null,paraList={}){
+    let currentBlock={
+        name:name,
+        type:4,//4标准圆柱
+        position:position,
+        rotation:rotation,
+        size:size,
+        strokeWeight:strokeWeight,
+        stroke:stroke,
+        fill:fill,
+        paraList:paraList,
     }
     if(f!=null){
         currentBlock.change=(t)=>{
@@ -73,43 +172,41 @@ function initCube(name,position,size,bump,stroke=[200],strokeWeight=1,fill=null,
  * @param {number} xcount x方向的切分数量
  * @param {number} zsize z方向边长
  * @param {number} zcount z方向的切分数量
- * @param {(t:number,obj:object)=>void} f 动效函数，obj是自身this
+ * @param {number} centerX x方向中心点位置
+ * @param {number} centerZ z方向中心点位置
+ * @param {(t:number,obj:object)=>void|null} f 动效函数，obj是自身this
  * @param {Array<number>|null} stroke P5-stroke值
  * @param {number} strokeWeight P5-strokeWeight值
  * @param {Array<number>|null} fill P5-fill值
  * @param {number} plRatiox x方向缩放比例
  * @param {number} plRatioz z方向缩放比例
  */
-function initBasicGround(xsize=2000,xcount=20,zsize=2000,zcount=20,f,stroke=[100],strokeWeight=3,fill=[0],plRatiox=1,plRatioz=1){
-    for(let x=-xcount/2;x<xcount/2;x++){
-        for(let z=-zcount/2;z<zcount/2;z++){
-            let currentBlock={
-                name:"ground",
-                type:1,//1标准长方体
-                paraList:{//携带的参数列表
-                    x:x/plRatiox,
-                    z:z/plRatioz,
-                },
-                position:{
-                    x:x*(xsize/xcount),
-                    z:z*(zsize/zcount),
+function initBasicFunctionGround(xsize=2000,xcount=20,zsize=2000,zcount=20,centerX=0,centerZ=0,f=null,stroke=[100],strokeWeight=3,fill=objects.global.background,plRatiox=1,plRatioz=1){
+    for(let x=centerX-xsize/2;x<centerX+xsize/2;x+=xsize/xcount){
+        for(let z=centerZ-zsize/2;z<centerZ+zsize/2;z+=zsize/zcount){
+            initCube(
+                "ground",
+                {
+                    x:x,
+                    z:z,
                     y:-50,
                 },
-                size:{
+                {
                     x:xsize/xcount,
                     z:zsize/zcount,
                     y:100,
                 },
-                strokeWeight:strokeWeight,
-                stroke:stroke,
-                fill:fill,
-            }
-            if(arguments.length>=5){
-                currentBlock.change=function(t){
-                    f(t,this);
+                null,
+                stroke,
+                strokeWeight,
+                fill,
+                null,
+                f,
+                {
+                    x:(x-centerX)/plRatiox,
+                    z:(z-centerZ)/plRatioz,
                 }
-            }
-            objects.objectsList.push(currentBlock);
+            );
         }
     }    
 }
@@ -120,44 +217,43 @@ function initBasicGround(xsize=2000,xcount=20,zsize=2000,zcount=20,f,stroke=[100
  * @param {number} xcount x方向的切分数量
  * @param {number} zsize z方向边长
  * @param {number} zcount z方向的切分数量
+ * @param {number} centerX x方向中心点位置
+ * @param {number} centerZ z方向中心点位置
  * @param {number} height 天花板初始离地高度【有动效的话在函数f里设置】
- * @param {(t:number,obj:object)=>void} f 动效函数，obj是自身this
+ * @param {(t:number,obj:object)=>void|null} f 动效函数，obj是自身this
  * @param {Array<number>|null} stroke P5-stroke值
  * @param {number} strokeWeight P5-strokeWeight值
  * @param {Array<number>|null} fill P5-fill值
  * @param {number} plRatiox x方向缩放比例
  * @param {number} plRatioz z方向缩放比例
  */
-function initBasicFunctionCelling(xsize=2000,xcount=20,zsize=2000,zcount=20,height=1300,f,stroke=[100],strokeWeight=3,fill=[0],plRatiox=2,plRatioz=2){
-    for(let x=-xcount/2;x<xcount/2;x++){
-        for(let z=-zcount/2;z<zcount/2;z++){
-            let currentBlock={
-                name:"sky",
-                type:1,//1标准长方体
-                paraList:{//携带的参数列表
-                    x:x/plRatiox,
-                    z:z/plRatioz,
-                },
-                position:{
-                    x:x*(xsize/xcount),
-                    z:z*(zsize/zcount),
+function initBasicFunctionCelling(xsize=2000,xcount=20,zsize=2000,zcount=20,centerX=0,centerZ=0,height=1300,f=null,stroke=[100],strokeWeight=3,fill=objects.global.background,plRatiox=2,plRatioz=2){
+    for(let x=centerX-xsize/2;x<centerX+xsize/2;x+=xsize/xcount){
+        for(let z=centerZ-zsize/2;z<centerZ+zsize/2;z+=zsize/zcount){
+            initCube(
+                "celling",
+                {
+                    x:x,
+                    z:z,
                     y:height,
                 },
-                size:{
+                {
                     x:xsize/xcount,
                     z:zsize/zcount,
-                    y:200,
+                    y:100,
                 },
-                strokeWeight:strokeWeight,
-                stroke:stroke,
-                fill:fill,
-            }
-            if(arguments.length>=6){
-                currentBlock.change=function(t){
-                    f(t,this);
-                }
-            }
-            objects.objectsList.push(currentBlock);
+                null,
+                stroke,
+                strokeWeight,
+                fill,
+                null,
+                f,
+                {
+                    x:(x-centerX)/plRatiox,
+                    z:(z-centerZ)/plRatioz,
+                    height:height,
+                },
+            );
         }
     }    
 }
@@ -465,6 +561,7 @@ function initDisplayScreen(type,name,position,heading,fuc,sw=300,sh=300,sz=20,st
  * @param {{x:number,y:number,z:number}} position 位置
  * @param {boolean} heading 朝向：true->z ; false->x
  * @param {TdFunction} fuc 展示的函数对象
+ * @param {Array<number>|null} enterStroke 玩家进入HUD显示区时描边变色
  */
 function initBasicDisplayScreen(name,position,heading,fuc,enterStroke=null){
     initDisplayScreen(11,name,position,heading,fuc,300,300,20,[200],1,null,300,enterStroke);

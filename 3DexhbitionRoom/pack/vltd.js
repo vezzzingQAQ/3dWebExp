@@ -33,11 +33,16 @@ function setup(){
             this.isWalkingLeft=false;
             this.isWalkingRight=false;
 
+            this.ud=player.ud;
+
+            this.isMovingUpwards=false;
+            this.isMovingDownwards=false;
+
             this.thetarw=0;
             this.thetaeh=0;
         }
         _calBump(x,z,cube){//返回x,z位置坐标的值
-            if(cube.hasOwnProperty("bump") && cube.position.y+cube.bump.size.y/2>(this.y+player.height)/2){
+            if(cube.hasOwnProperty("bump") && cube.bump!=null && cube.position.y+cube.bump.size.y/2>(this.y+player.height)/2){
                 let leftBound=cube.position.x-cube.bump.size.x/2-this.bumpR;
                 let rightBound=cube.position.x+cube.bump.size.x/2+this.bumpR;
                 let upperBound=cube.position.z+cube.bump.size.z/2+this.bumpR;
@@ -94,6 +99,12 @@ function setup(){
             this.z-=this.moveSpeed*cos(this.thetarw);
             this._walk();
         }
+        moveUpwards(){
+            this.y+=this.moveSpeed;
+        }
+        moveDownwards(){
+            this.y-=this.moveSpeed;
+        }
         lookAround(){
             camera(this.x,this.y+this.height,this.z,
             this.x+200*cos(this.thetarw),
@@ -117,6 +128,14 @@ function setup(){
             }
             if(this.isWalkingRight){
                 this.walkRight();
+            }
+            if(this.ud){
+                if(this.isMovingUpwards){
+                    this.moveUpwards();
+                }
+                if(this.isMovingDownwards){
+                    this.moveDownwards();
+                }    
             }
             this.lookAround();
         }
@@ -267,6 +286,12 @@ function keyPressed(){
         case 68:
             player.isWalkingRight=true;
             break;
+        case 81:
+            player.isMovingUpwards=true;
+            break;
+        case 69:
+            player.isMovingDownwards=true;
+            break;
     }
 }
 function keyReleased(){
@@ -287,5 +312,11 @@ function keyReleased(){
             player.isWalkingRight=false;
             player.isWalking=false;  
             break;
+        case 81:
+            player.isMovingUpwards=false;
+            break;
+        case 69:
+            player.isMovingDownwards=false;  
+            break;  
     }
 }

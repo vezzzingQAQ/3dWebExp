@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D展览馆</title>
+    <link rel="stylesheet" type="text/css" href="../pack/csspack/style.css">
+    <script src="../support/p5.min.js"></script>
+    <script src="../pack/publicVariable.js"></script>
+    <script src="../pack/hudObj.js"></script>
+    <script src="../pack/mathObj.js"></script>
+    <script src="../pack/roomObj.js"></script>
+    <script src="../pack/vltd.js"></script>
+</head>
+<body>
+    <div class="hudLayer"></div>
+    <script>
+var objects=initStruc({x:300,z:0},{background:[250]});
+initSphere(
+    "s1",
+    {
+        x:0,
+        z:0,
+        y:300,
+    },
+    {
+        r:60,
+    },
+);
+initSphere(
+    "s2",
+    {
+        x:0,
+        z:100,
+        y:300,
+    },
+    {
+        r:30,
+    },
+    [0],
+    0.3,
+    null,
+    {
+        x:0,
+        z:0,
+        y:0,
+    },
+    (t,obj)=>{
+        obj.position.x=sin(t/100)*150;
+        obj.position.z=cos(t/100)*150;
+        obj.rotation.y+=0.02;
+    }
+)
+    </script>
+</body>
+</html>
